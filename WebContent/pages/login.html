@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Civic Issues | Login</title>
+  <link rel="stylesheet" href="../css/login.css" />
+  <link rel="stylesheet" href="../css/portal.css?v=1.1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <style>
+    .google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:11px 0;border:1px solid #dadce0;border-radius:8px;background:#fff;cursor:pointer;font-family:'Google Sans',Roboto,Arial,sans-serif;font-size:.9rem;font-weight:500;color:#3c4043;transition:background .2s,box-shadow .2s;text-decoration:none;margin-bottom:6px}
+    .google-btn:hover{background:#f7f8f8;box-shadow:0 1px 3px rgba(60,64,67,.15)}
+    .google-btn img{width:20px;height:20px}
+  </style>
+</head>
+<body>
+  <button id="theme-toggle-top" class="theme-toggle-btn" title="Toggle Theme" style="position: fixed; top: 30px; right: 30px; z-index: 10000; background: var(--card); border: 1px solid var(--border); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text); font-size: 1.2rem; transition: all 0.3s ease; box-shadow: var(--shadow);">
+    <i class="fas fa-moon"></i>
+  </button>
+  <div class="bg-shape shape-one" aria-hidden="true"></div>
+  <div class="bg-shape shape-two" aria-hidden="true"></div>
+
+  <main class="container" id="container">
+    <section class="auth-panel">
+      <div class="form-container sign-in-container">
+        <form action="../LoginServlet" method="POST" id="signInForm" novalidate>
+          <h1>Welcome back</h1>
+          <p class="form-subtitle">Sign in to continue managing civic complaints.</p>
+
+          <div class="social-container">
+            <a href="#" class="social" onclick="event.preventDefault();googleSignIn()" aria-label="Sign in with Google">
+              <i class="fab fa-google"></i>
+            </a>
+          </div>
+
+          <span class="form-hint">or use your email account</span>
+
+          <div class="input-group">
+            <label for="signInEmail">Email address</label>
+            <input type="email" name="email" id="signInEmail" placeholder="you@example.com" required />
+          </div>
+
+          <div class="input-group">
+            <label for="signInPassword">Password</label>
+            <input type="password" name="password" id="signInPassword" placeholder="Enter your password" required />
+          </div>
+
+          <a href="#" class="forgot-password">Forgot password?</a>
+          <p id="signInStatus" class="form-status" aria-live="polite"></p>
+
+          <button type="submit">Sign In</button>
+        </form>
+      </div>
+
+      <div class="form-container sign-up-container">
+        <form action="../RegisterServlet" method="POST" id="signUpForm" novalidate>
+          <h1>Create account</h1>
+          <p class="form-subtitle">Start your civic engagement journey in seconds.</p>
+
+          <div class="social-container">
+            <a href="#" class="social" onclick="event.preventDefault();googleSignIn()" aria-label="Sign up with Google">
+              <i class="fab fa-google"></i>
+            </a>
+          </div>
+
+          <span class="form-hint">or register using email</span>
+
+          <div class="input-group">
+            <label for="signUpName">Full name</label>
+            <input type="text" name="fullName" id="signUpName" placeholder="Your full name" required />
+          </div>
+
+          <div class="input-group">
+            <label for="signUpEmail">Email address</label>
+            <input type="email" name="email" id="signUpEmail" placeholder="you@example.com" required />
+          </div>
+
+          <div class="input-group">
+            <label for="signUpPhone">Phone number</label>
+            <input type="tel" name="phone" id="signUpPhone" placeholder="+1XXXXXXXXXX" />
+          </div>
+
+          <div class="input-group">
+            <label for="signUpPassword">Password</label>
+            <input type="password" name="password" id="signUpPassword" placeholder="Create a password" required />
+          </div>
+
+          <div class="input-group">
+            <label for="signUpCity">City</label>
+            <select name="city" id="signUpCity" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; margin-top: 5px;">
+              <option value="">Select your city</option>
+              <optgroup label="Tamil Nadu">
+                <option value="Chennai">Chennai</option>
+                <option value="Coimbatore">Coimbatore</option>
+                <option value="Madurai">Madurai</option>
+                <option value="Tiruchirappalli">Tiruchirappalli</option>
+                <option value="Salem">Salem</option>
+                <option value="Tirunelveli">Tirunelveli</option>
+                <option value="Erode">Erode</option>
+                <option value="Vellore">Vellore</option>
+                <option value="Thoothukudi">Thoothukudi</option>
+                <option value="Thanjavur">Thanjavur</option>
+                <option value="Dindigul">Dindigul</option>
+                <option value="Nagercoil">Nagercoil</option>
+              </optgroup>
+              <optgroup label="Karnataka">
+                <option value="Bangalore">Bangalore</option>
+                <option value="Mysore">Mysore</option>
+                <option value="Hubli">Hubli</option>
+                <option value="Mangalore">Mangalore</option>
+                <option value="Belgaum">Belgaum</option>
+                <option value="Dharwad">Dharwad</option>
+                <option value="Gulbarga">Gulbarga</option>
+              </optgroup>
+              <optgroup label="Kerala">
+                <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                <option value="Kochi">Kochi</option>
+                <option value="Kozhikode">Kozhikode</option>
+                <option value="Thrissur">Thrissur</option>
+              </optgroup>
+              <optgroup label="Andhra Pradesh">
+                <option value="Hyderabad">Hyderabad</option>
+                <option value="Visakhapatnam">Visakhapatnam</option>
+                <option value="Vijayawada">Vijayawada</option>
+                <option value="Tirupati">Tirupati</option>
+                <option value="Guntur">Guntur</option>
+              </optgroup>
+              <optgroup label="Telangana">
+                <option value="Hyderabad">Hyderabad</option>
+                <option value="Warangal">Warangal</option>
+                <option value="Nizamabad">Nizamabad</option>
+              </optgroup>
+              <optgroup label="Maharashtra">
+                <option value="Mumbai">Mumbai</option>
+                <option value="Pune">Pune</option>
+                <option value="Nagpur">Nagpur</option>
+                <option value="Nashik">Nashik</option>
+                <option value="Aurangabad">Aurangabad</option>
+                <option value="Thane">Thane</option>
+              </optgroup>
+              <optgroup label="Delhi NCR">
+                <option value="New Delhi">New Delhi</option>
+                <option value="Noida">Noida</option>
+                <option value="Gurgaon">Gurgaon</option>
+                <option value="Faridabad">Faridabad</option>
+                <option value="Ghaziabad">Ghaziabad</option>
+              </optgroup>
+              <optgroup label="Uttar Pradesh">
+                <option value="Lucknow">Lucknow</option>
+                <option value="Kanpur">Kanpur</option>
+                <option value="Varanasi">Varanasi</option>
+                <option value="Agra">Agra</option>
+                <option value="Prayagraj">Prayagraj</option>
+              </optgroup>
+              <optgroup label="Rajasthan">
+                <option value="Jaipur">Jaipur</option>
+                <option value="Jodhpur">Jodhpur</option>
+                <option value="Udaipur">Udaipur</option>
+                <option value="Kota">Kota</option>
+              </optgroup>
+              <optgroup label="Gujarat">
+                <option value="Ahmedabad">Ahmedabad</option>
+                <option value="Surat">Surat</option>
+                <option value="Vadodara">Vadodara</option>
+                <option value="Rajkot">Rajkot</option>
+              </optgroup>
+              <optgroup label="West Bengal">
+                <option value="Kolkata">Kolkata</option>
+                <option value="Howrah">Howrah</option>
+                <option value="Siliguri">Siliguri</option>
+              </optgroup>
+              <optgroup label="Punjab & Haryana">
+                <option value="Chandigarh">Chandigarh</option>
+                <option value="Ludhiana">Ludhiana</option>
+                <option value="Amritsar">Amritsar</option>
+              </optgroup>
+              <optgroup label="Madhya Pradesh">
+                <option value="Bhopal">Bhopal</option>
+                <option value="Indore">Indore</option>
+                <option value="Jabalpur">Jabalpur</option>
+              </optgroup>
+              <optgroup label="Bihar & Jharkhand">
+                <option value="Patna">Patna</option>
+                <option value="Ranchi">Ranchi</option>
+                <option value="Jamshedpur">Jamshedpur</option>
+              </optgroup>
+              <optgroup label="Odisha">
+                <option value="Bhubaneswar">Bhubaneswar</option>
+                <option value="Cuttack">Cuttack</option>
+              </optgroup>
+              <optgroup label="Northeast">
+                <option value="Guwahati">Guwahati</option>
+                <option value="Imphal">Imphal</option>
+                <option value="Shillong">Shillong</option>
+                <option value="Aizawl">Aizawl</option>
+                <option value="Gangtok">Gangtok</option>
+              </optgroup>
+              <optgroup label="Uttarakhand & HP">
+                <option value="Dehradun">Dehradun</option>
+                <option value="Shimla">Shimla</option>
+              </optgroup>
+              <optgroup label="Goa & Chhattisgarh">
+                <option value="Panaji">Panaji</option>
+                <option value="Raipur">Raipur</option>
+              </optgroup>
+              <optgroup label="J&K">
+                <option value="Srinagar">Srinagar</option>
+                <option value="Jammu">Jammu</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <p id="signUpStatus" class="form-status" aria-live="polite"></p>
+          <button type="submit">Create Account</button>
+        </form>
+      </div>
+    </section>
+
+    <aside class="overlay-container">
+      <div class="overlay-panel overlay-right">
+        <p class="eyebrow">New here?</p>
+        <h2>Build Better Neighborhoods</h2>
+        <p>
+          Create your account to report, track, and resolve community issues with a seamless workflow.
+        </p>
+        <button class="ghost" id="signUp">Create Account</button>
+      </div>
+
+      <div class="overlay-panel overlay-left">
+        <p class="eyebrow">Already registered?</p>
+        <h2>Pick Up Where You Left Off</h2>
+        <p>
+          Sign in to monitor active complaints, review updates, and keep your civic profile current.
+        </p>
+        <button class="ghost" id="signIn">Sign In</button>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="../js/login.js"></script>
+  <script src="../js/theme.js"></script>
+
+  <script>
+    function googleSignIn() {
+      var w = 450, h = 500;
+      var left = (screen.width - w) / 2, top = (screen.height - h) / 2;
+      window.open(
+        '../google-signin.html',
+        'GoogleSignIn',
+        'width=' + w + ',height=' + h + ',top=' + top + ',left=' + left + ',menubar=no,toolbar=no,location=no,status=no'
+      );
+    }
+
+    // Listen for message from popup
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'google-signin') {
+        localStorage.setItem('civicUserProfile', JSON.stringify({fullName: e.data.name, email: e.data.email}));
+        var f = document.createElement('form'); f.method = 'POST'; f.action = '../GoogleLoginServlet';
+        var i1 = document.createElement('input'); i1.type = 'hidden'; i1.name = 'name'; i1.value = e.data.name; f.appendChild(i1);
+        var i2 = document.createElement('input'); i2.type = 'hidden'; i2.name = 'email'; i2.value = e.data.email; f.appendChild(i2);
+        document.body.appendChild(f); f.submit();
+      }
+    });
+
+    window.addEventListener('load', function() {
+      var p = new URLSearchParams(window.location.search);
+      if (p.get('error') === 'invalid_credentials') {
+        var s = document.getElementById('signInStatus');
+        if (s) { s.textContent = 'Invalid email or password.'; s.style.color = '#b42318'; }
+      }
+      if (p.get('error') === 'email_exists') {
+        var s = document.getElementById('signInStatus');
+        if (s) { s.textContent = 'Email already registered. Please sign in.'; s.style.color = '#b42318'; }
+        document.getElementById('container').classList.remove('right-panel-active');
+      }
+      if (p.get('error') === 'google_failed') {
+        var s = document.getElementById('signInStatus');
+        if (s) { s.textContent = 'Google Sign-In failed. Try again.'; s.style.color = '#b42318'; }
+      }
+      if (p.get('success') === 'registered') {
+        var s = document.getElementById('signUpStatus');
+        if (s) { s.textContent = 'Registration successful! Sign in now.'; s.style.color = '#0f8f5e'; }
+        document.getElementById('container').classList.remove('right-panel-active');
+      }
+    });
+  </script>
+</body>
+</html>

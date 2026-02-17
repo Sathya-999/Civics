@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Civic Connect | My Profile</title>
+  <link rel="stylesheet" href="../css/portal.css?v=1.1">
+  <link rel="stylesheet" href="../css/personal-info.css?v=1.2">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+</head>
+<body id="appShell" class="dashboard-view-mode">
+  <aside class="sidebar">
+    <div class="brand-section">
+      <div class="brand-name">
+        <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" rx="10" fill="var(--primary-blue)"/>
+          <path d="M20 6L8 14V28H14V20H18V28H26V20H22V28H32V14L20 6Z" fill="white"/>
+          <rect x="17" y="14" width="6" height="6" rx="1" fill="var(--primary-blue)"/>
+          <circle cx="20" cy="32" r="3" fill="#2ecc71"/>
+        </svg>
+        <span>CIVIC CONNECT</span>
+      </div>
+    </div>
+    <!-- Sidebar Search -->
+    <div style="padding: 0 16px 12px;">
+      <div style="position:relative;">
+        <input type="text" id="sidebarSearch" placeholder="Search pages..." oninput="filterSidebar(this.value)"
+          style="width:100%;padding:9px 12px 9px 34px;border-radius:10px;border:1px solid var(--border-light);background:var(--bg-main);color:var(--text-main);font-size:0.8rem;outline:none;transition:var(--transition);">
+        <i class="fas fa-search" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.75rem;"></i>
+      </div>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="dashboard.html" class="menu-item">
+        <i class="fas fa-th-large"></i> <span>Dashboard</span>
+      </a>
+      <a href="services.html" class="menu-item">
+        <i class="fas fa-hand-holding-heart"></i> <span>Services</span>
+      </a>
+      <a href="raise-complaint.html" class="menu-item">
+        <i class="fas fa-file-signature"></i> <span>Raise Complaint</span>
+      </a>
+      <a href="track-complaint.html" class="menu-item">
+        <i class="fas fa-map-marker-alt"></i> <span>Track Complaint</span>
+      </a>
+      <a href="personal-info.html" class="menu-item active">
+        <i class="fas fa-user-circle"></i> <span>Profile</span>
+      </a>
+      <a href="#" onclick="logout()" class="menu-item" style="color: #e74c3c; margin-top: auto;">
+        <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="profile-container">
+      
+      <!-- HERO CARD -->
+      <section class="profile-header-card">
+        <div class="profile-header-content">
+          <div class="profile-big-avatar user-avatar">RG</div>
+          <div class="profile-intro">
+            <h1>Hi, <span class="user-name">Rg8515492</span>!</h1>
+            <p>Your civic activities and neighborhood impact at a glance.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW MODE -->
+      <article class="details-view-card" id="detailsViewSection">
+        <div class="details-grid">
+          <div class="detail-item">
+            <h3><i class="fas fa-user"></i> Full Name</h3>
+            <p id="viewFullName">Loading...</p>
+          </div>
+
+          <div class="detail-item">
+            <h3><i class="fas fa-phone"></i> Phone Number</h3>
+            <p id="viewPhoneNumber">Not provided</p>
+          </div>
+
+          <div class="detail-item">
+            <h3><i class="fas fa-envelope"></i> Email Address</h3>
+            <p id="viewEmail">Not provided</p>
+          </div>
+
+          <div class="detail-item">
+            <h3><i class="fas fa-briefcase"></i> Profession</h3>
+            <p id="viewProfession">Not provided</p>
+          </div>
+
+          <div class="detail-item" style="grid-column: 1 / -1;">
+            <h3><i class="fas fa-map-pin"></i> Home Address</h3>
+            <p id="viewAddress">Not provided</p>
+          </div>
+
+          <div class="detail-item">
+            <h3><i class="fas fa-location-crosshairs"></i> Geo Location</h3>
+            <p id="viewGeoLocation">Not provided</p>
+          </div>
+
+          <div class="detail-item">
+            <h3><i class="fas fa-info-circle"></i> Other Information</h3>
+            <p id="viewOtherInfo">Not provided</p>
+          </div>
+        </div>
+
+        <div class="details-actions">
+          <button type="button" class="btn btn-primary" id="editProfileBtn">
+            <i class="fas fa-edit"></i> Edit Profile
+          </button>
+        </div>
+      </article>
+
+      <!-- EDIT MODE -->
+      <form class="editor-card" id="profileForm" action="#" style="display: none;">
+        <h2 style="margin-bottom: 25px;"><i class="fas fa-user-gear"></i> Update Your Information</h2>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <span>Full Name</span>
+            <input type="text" id="fullName" placeholder="Enter your full name" required />
+          </div>
+
+          <div class="form-group">
+            <span>Phone Number</span>
+            <input type="tel" id="phoneNumber" placeholder="Enter your phone number" />
+          </div>
+
+          <div class="form-group">
+            <span>Email</span>
+            <input type="email" id="email" placeholder="Enter your email" required />
+          </div>
+
+          <div class="form-group">
+            <span>Profession</span>
+            <input type="text" id="profession" placeholder="e.g. Engineer, Student" />
+          </div>
+
+          <div class="form-group" style="grid-column: span 2;">
+            <span>Address</span>
+            <textarea id="address" rows="3" placeholder="House no, street, city, state, pincode"></textarea>
+          </div>
+
+          <div class="form-group location-group" style="grid-column: span 2;">
+            <span>Geo Location</span>
+            <div class="location-input-row">
+              <input type="text" id="geoLocation" placeholder="Latitude, Longitude" />
+              <button type="button" class="btn btn-secondary btn-sm" id="detectLocation">
+                <i class="fas fa-location-arrow"></i> Use Live Location
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group" style="grid-column: span 2;">
+            <span>Other Information</span>
+            <textarea id="otherInfo" rows="3" placeholder="Add additional details"></textarea>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-check"></i> Save Changes
+          </button>
+          <button type="button" class="btn btn-ghost" id="cancelEditBtn">Cancel</button>
+        </div>
+        <p id="saveStatus" class="save-status" aria-live="polite"></p>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    function filterSidebar(query) {
+      const items = document.querySelectorAll('.sidebar-menu .menu-item');
+      const q = query.toLowerCase().trim();
+      items.forEach(item => {
+        if (!q) { item.style.display = ''; return; }
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+  </script>
+  <script src="../js/personal-info.js"></script>
+  <script src="../js/portal.js"></script>
+  <script src="../js/theme.js"></script>
+</body>
+</html>

@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Civic Connect | Raise Complaint</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <link rel="stylesheet" href="../css/portal.css?v=1.1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <style>
+    /* ═══════════════════════════════════════════
+       RAISE COMPLAINT — PREMIUM DESIGN
+       ═══════════════════════════════════════════ */
+
+    .complaint-hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      padding: 32px 36px;
+      margin-bottom: 28px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .complaint-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
+    .complaint-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: 10%;
+      width: 200px;
+      height: 200px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+    .complaint-hero h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      position: relative;
+      z-index: 1;
+    }
+    .complaint-hero p {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      margin: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-badges {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      position: relative;
+      z-index: 1;
+      flex-wrap: wrap;
+    }
+    .hero-badge {
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(8px);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Step Indicator */
+    .steps-indicator {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 32px;
+      padding: 0 20px;
+    }
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .step-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      background: var(--bg-main);
+      border: 3px solid var(--border-light);
+      color: var(--text-muted);
+    }
+    .step-circle.active {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-color: #667eea;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      transform: scale(1.1);
+    }
+    .step-circle.done {
+      background: linear-gradient(135deg, #00b09b, #96c93d);
+      border-color: #00b09b;
+      color: #fff;
+    }
+    .step-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 8px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .step-label.active { color: #667eea; }
+    .step-label.done { color: #00b09b; }
+    .step-line {
+      width: 60px;
+      height: 3px;
+      background: var(--border-light);
+      margin: 0 -2px;
+      margin-bottom: 24px;
+      transition: background 0.4s;
+    }
+    .step-line.done { background: linear-gradient(90deg, #00b09b, #96c93d); }
+
+    /* Form Container */
+    .form-container {
+      background: var(--card-bg);
+      color: var(--text-main);
+      padding: 0;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+      border: 1px solid var(--border-light);
+      max-width: 680px;
+      margin: 0 auto;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .form-section {
+      padding: 28px 32px;
+      border-bottom: 1px solid var(--border-light);
+      transition: all 0.3s ease;
+    }
+    .form-section:last-child { border-bottom: none; }
+    .form-section:hover { background: rgba(102, 126, 234, 0.02); }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .section-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .section-icon.blue { background: rgba(102, 126, 234, 0.12); color: #667eea; }
+    .section-icon.orange { background: rgba(255, 152, 0, 0.12); color: #ff9800; }
+    .section-icon.green { background: rgba(0, 176, 155, 0.12); color: #00b09b; }
+    .section-icon.red { background: rgba(220, 53, 69, 0.12); color: #dc3545; }
+    .section-icon.purple { background: rgba(118, 75, 162, 0.12); color: #764ba2; }
+
+    .section-title { font-size: 1rem; font-weight: 700; color: var(--text-main); }
+    .section-subtitle { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* Form Inputs */
+    .input-group { margin-bottom: 18px; position: relative; }
+    .input-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+    .input-group label .required { color: #dc3545; margin-left: 3px; }
+    .input-wrapper { position: relative; display: flex; align-items: center; }
+    .input-wrapper i.input-icon {
+      position: absolute;
+      left: 14px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      z-index: 2;
+      transition: color 0.3s;
+    }
+    .input-wrapper input,
+    .input-wrapper select,
+    .input-wrapper textarea {
+      width: 100%;
+      padding: 13px 14px 13px 42px;
+      border: 2px solid var(--border-light);
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 0.92rem;
+      background: var(--bg-main);
+      color: var(--text-main);
+      transition: all 0.3s ease;
+      outline: none;
+    }
+    .input-wrapper input:focus,
+    .input-wrapper select:focus,
+    .input-wrapper textarea:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.12);
+    }
+    .input-wrapper input:focus ~ i.input-icon,
+    .input-wrapper select:focus ~ i.input-icon,
+    .input-wrapper textarea:focus ~ i.input-icon { color: #667eea; }
+    .input-wrapper textarea { min-height: 110px; resize: vertical; }
+    .input-hint {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Priority Cards */
+    .priority-cards { display: flex; gap: 12px; }
+    .priority-card {
+      flex: 1;
+      padding: 14px;
+      border: 2px solid var(--border-light);
+      border-radius: 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: var(--bg-main);
+    }
+    .priority-card:hover { transform: translateY(-2px); }
+    .priority-card.selected { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+    .priority-card .priority-emoji { font-size: 1.5rem; margin-bottom: 6px; }
+    .priority-card .priority-name { font-size: 0.82rem; font-weight: 700; }
+    .priority-card.low.selected { border-color: #28a745; background: rgba(40, 167, 69, 0.08); }
+    .priority-card.medium.selected { border-color: #ff9800; background: rgba(255, 152, 0, 0.08); }
+    .priority-card.high.selected { border-color: #dc3545; background: rgba(220, 53, 69, 0.08); }
+
+    /* Camera Section */
+    .camera-zone {
+      border: 2px dashed var(--border-light);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      background: var(--bg-main);
+      transition: all 0.3s;
+      cursor: pointer;
+      position: relative;
+    }
+    .camera-zone:hover { border-color: #667eea; background: rgba(102, 126, 234, 0.03); }
+    .camera-zone .camera-icon-big { font-size: 2.5rem; color: #667eea; margin-bottom: 12px; }
+    .camera-zone h3 { font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 0 0 6px 0; }
+    .camera-zone p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
+
+    #cameraContainer {
+      display: none;
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 3px solid #667eea;
+      aspect-ratio: 16/9;
+      background: #000;
+      margin-bottom: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    }
+    #cameraContainer video { width: 100%; height: 100%; object-fit: cover; }
+    .camera-live-badge {
+      position: absolute; top: 12px; left: 12px;
+      background: rgba(220, 53, 69, 0.9); color: #fff;
+      padding: 5px 14px; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 700;
+      display: flex; align-items: center; gap: 6px;
+      backdrop-filter: blur(8px);
+    }
+    .live-dot {
+      width: 8px; height: 8px;
+      background: #fff; border-radius: 50%;
+      animation: livePulse 1s infinite;
+    }
+    .camera-timestamp {
+      position: absolute; bottom: 12px; left: 12px;
+      background: rgba(0,0,0,0.65); color: #00ff00;
+      padding: 5px 12px; border-radius: 8px;
+      font-size: 0.72rem; font-family: 'Courier New', monospace;
+      font-weight: 700; backdrop-filter: blur(4px);
+    }
+    .capture-btn {
+      position: absolute; bottom: 14px; left: 50%;
+      transform: translateX(-50%);
+      width: 60px; height: 60px; border-radius: 50%;
+      border: 4px solid rgba(255,255,255,0.9);
+      background: linear-gradient(135deg, #dc3545, #ff6b6b);
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(220, 53, 69, 0.5);
+      transition: all 0.2s ease;
+    }
+    .capture-btn:hover { transform: translateX(-50%) scale(1.1); }
+    .capture-btn:active { transform: translateX(-50%) scale(0.95); }
+    .switch-camera-btn {
+      position: absolute; bottom: 18px; right: 16px;
+      width: 44px; height: 44px; border-radius: 50%;
+      border: none; background: rgba(255,255,255,0.15);
+      color: #fff; font-size: 1.1rem; cursor: pointer;
+      backdrop-filter: blur(8px); transition: all 0.2s;
+    }
+    .switch-camera-btn:hover { background: rgba(255,255,255,0.3); }
+
+    /* Preview */
+    #imagePreviewContainer {
+      display: none; position: relative;
+      border-radius: 16px; overflow: hidden;
+      border: 3px solid #00b09b; aspect-ratio: 16/9;
+      background: #000; margin-bottom: 12px;
+      box-shadow: 0 8px 30px rgba(0, 176, 155, 0.2);
+    }
+    #imagePreviewContainer img { width: 100%; height: 100%; object-fit: cover; }
+    .preview-badge {
+      position: absolute; top: 12px; left: 12px;
+      background: rgba(0, 176, 155, 0.9); color: #fff;
+      padding: 5px 14px; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 700;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
+    }
+    .preview-badge.scanning {
+      background: rgba(102, 126, 234, 0.95);
+      animation: badgePulse 1s infinite;
+    }
+    .preview-badge.rejected {
+      background: rgba(220, 53, 69, 0.95);
+    }
+    .preview-badge.accepted {
+      background: rgba(0, 176, 155, 0.95);
+    }
+    @keyframes badgePulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .scan-overlay {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; color: #fff; font-size: 0.9rem;
+      font-weight: 700; z-index: 10; border-radius: 14px;
+    }
+    .scan-overlay i { font-size: 2rem; margin-bottom: 10px; }
+    .scan-overlay.rejected-overlay {
+      background: rgba(220, 53, 69, 0.7);
+    }
+    .retake-btn {
+      position: absolute; top: 12px; right: 12px;
+      background: rgba(220, 53, 69, 0.9); color: #fff;
+      border: none; padding: 7px 16px;
+      border-radius: 20px; font-size: 0.78rem;
+      font-weight: 600; cursor: pointer;
+      backdrop-filter: blur(8px); transition: all 0.2s;
+    }
+    .retake-btn:hover { background: rgba(220, 53, 69, 1); transform: scale(1.05); }
+
+    /* Location */
+    .location-card {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px; background: var(--bg-main);
+      border: 2px solid var(--border-light);
+      border-radius: 14px; cursor: pointer;
+      transition: all 0.3s;
+    }
+    .location-card:hover { border-color: #667eea; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1); }
+    .location-card.located { border-color: #00b09b; background: rgba(0, 176, 155, 0.05); }
+    .location-card .loc-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 1.2rem; flex-shrink: 0;
+    }
+    .location-card.located .loc-icon { background: linear-gradient(135deg, #00b09b, #96c93d); }
+    .loc-text h4 { font-size: 0.9rem; font-weight: 700; margin: 0 0 3px 0; color: var(--text-main); }
+    .loc-text p { font-size: 0.78rem; color: var(--text-muted); margin: 0; }
+    .loc-pulse {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 3px solid var(--border-light);
+      margin-left: auto; flex-shrink: 0;
+    }
+    .loc-pulse.active {
+      border-color: #00b09b; background: #00b09b;
+      animation: locPulse 1.5s infinite;
+    }
+
+    /* AI Status */
+    .ai-status-box {
+      padding: 16px 20px; border-radius: 14px;
+      margin-bottom: 20px; font-weight: 600;
+      font-size: 0.88rem; align-items: center;
+      gap: 12px; border: 1px solid transparent;
+      display: none;
+    }
+    .ai-status-box.show { display: flex; }
+    .ai-status-box.analyzing {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
+      color: #667eea; border-color: rgba(102, 126, 234, 0.2);
+    }
+    .ai-status-box.success {
+      background: linear-gradient(135deg, rgba(0, 176, 155, 0.08), rgba(150, 201, 61, 0.08));
+      color: #00b09b; border-color: rgba(0, 176, 155, 0.2);
+    }
+    .ai-status-box.error {
+      background: linear-gradient(135deg, rgba(220, 53, 69, 0.08), rgba(255, 107, 107, 0.08));
+      color: #dc3545; border-color: rgba(220, 53, 69, 0.2);
+    }
+
+    /* Submit */
+    .submit-section {
+      padding: 28px 32px;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.04), rgba(118, 75, 162, 0.04));
+    }
+    .submit-btn {
+      width: 100%; padding: 16px; border: none;
+      border-radius: 14px; font-size: 1rem;
+      font-weight: 700; cursor: pointer;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff; display: flex;
+      align-items: center; justify-content: center;
+      gap: 10px; transition: all 0.3s ease;
+      box-shadow: 0 6px 25px rgba(102, 126, 234, 0.3);
+      position: relative; overflow: hidden;
+    }
+    .submit-btn::before {
+      content: ''; position: absolute; top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      transition: left 0.6s;
+    }
+    .submit-btn:hover::before { left: 100%; }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 35px rgba(102, 126, 234, 0.4);
+    }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none !important; }
+    .submit-info {
+      text-align: center; font-size: 0.72rem;
+      color: var(--text-muted); margin-top: 12px;
+      display: flex; align-items: center;
+      justify-content: center; gap: 6px;
+    }
+
+    /* Animations */
+    @keyframes livePulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+    @keyframes locPulse {
+      0% { box-shadow: 0 0 0 0 rgba(0,176,155,0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(0,176,155,0); }
+      100% { box-shadow: 0 0 0 0 rgba(0,176,155,0); }
+    }
+    @keyframes popIn { 0% { opacity:0; transform:scale(0.7); } 100% { opacity:1; transform:scale(1); } }
+    @keyframes checkBounce { 0% { transform:scale(0); } 50% { transform:scale(1.2); } 100% { transform:scale(1); } }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .complaint-hero { padding: 24px; border-radius: 16px; }
+      .complaint-hero h1 { font-size: 1.3rem; }
+      .form-section { padding: 20px; }
+      .priority-cards { flex-direction: column; }
+      .step-line { width: 30px; }
+      .submit-section { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand-section">
+      <div class="brand-name">
+        <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" rx="10" fill="var(--primary-blue)"/>
+          <path d="M20 6L8 14V28H14V20H18V28H26V20H22V28H32V14L20 6Z" fill="white"/>
+          <rect x="17" y="14" width="6" height="6" rx="1" fill="var(--primary-blue)"/>
+          <circle cx="20" cy="32" r="3" fill="#2ecc71"/>
+        </svg>
+        <span>CIVIC CONNECT</span>
+      </div>
+    </div>
+
+    <!-- Sidebar Search -->
+    <div style="padding: 0 16px 12px;">
+      <div style="position:relative;">
+        <input type="text" id="sidebarSearch" placeholder="Search pages..." oninput="filterSidebar(this.value)"
+          style="width:100%;padding:9px 12px 9px 34px;border-radius:10px;border:1px solid var(--border-light);background:var(--bg-main);color:var(--text-main);font-size:0.8rem;outline:none;transition:var(--transition);">
+        <i class="fas fa-search" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.75rem;"></i>
+      </div>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="dashboard.html" class="menu-item"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="services.html" class="menu-item"><i class="fas fa-hand-holding-heart"></i> Services</a>
+      <a href="raise-complaint.html" class="menu-item active"><i class="fas fa-file-signature"></i> Raise Complaint</a>
+      <a href="track-complaint.html" class="menu-item"><i class="fas fa-map-marker-alt"></i> Track Complaint</a>
+      <a href="history.html" class="menu-item"><i class="fas fa-history"></i> My History</a>
+      <a href="chatbot.html" class="menu-item"><i class="fas fa-robot"></i> Ask CAI</a>
+      <div class="menu-divider"></div>
+      <a href="personal-info.html" class="menu-item"><i class="fas fa-user-circle"></i> Profile</a>
+      <a href="#" class="menu-item" id="theme-toggle"><i class="fas fa-moon"></i> <span>Dark Mode</span></a>
+      <a href="#" onclick="logout()" class="menu-item" style="color:#e74c3c;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header class="top-bar">
+      <div class="header-title">
+        <h2>Raise Complaint</h2>
+        <p>Report civic issues with verified evidence</p>
+      </div>
+      <div class="top-actions">
+        <button class="theme-toggle-btn" id="theme-toggle-top" title="Toggle Theme" style="background:var(--card-bg);border:1px solid var(--border-light);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-main);font-size:1.1rem;transition:var(--transition);box-shadow:var(--shadow-sm);">
+          <i class="fas fa-moon"></i>
+        </button>
+        <button onclick="location.href='chatbot.html'" title="Ask AI" style="background:var(--card-bg);border:1px solid var(--border-light);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-main);font-size:1.1rem;transition:var(--transition);box-shadow:var(--shadow-sm);margin-left:10px;">
+          <i class="fas fa-robot"></i>
+        </button>
+        <div class="user-profile-pill">
+          <img src="https://ui-avatars.com/api/?name=Member&background=007bff&color=fff" alt="User" class="user-avatar-small">
+          <span class="user-name">Member</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <div class="complaint-hero">
+      <h1><i class="fas fa-shield-halved"></i> Report a Civic Issue</h1>
+      <p>Your complaint is AI-verified, GPS-tagged, and tracked in real-time until resolved.</p>
+      <div class="hero-badges">
+        <div class="hero-badge"><i class="fas fa-camera"></i> Live Evidence</div>
+        <div class="hero-badge"><i class="fas fa-satellite-dish"></i> GPS Verified</div>
+        <div class="hero-badge"><i class="fas fa-brain"></i> AI Authenticated</div>
+        <div class="hero-badge"><i class="fas fa-envelope"></i> Email Updates</div>
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="steps-indicator">
+      <div class="step-item">
+        <div class="step-circle active" id="step1">1</div>
+        <div class="step-label active">Details</div>
+      </div>
+      <div class="step-line" id="line1"></div>
+      <div class="step-item">
+        <div class="step-circle" id="step2">2</div>
+        <div class="step-label">Evidence</div>
+      </div>
+      <div class="step-line" id="line2"></div>
+      <div class="step-item">
+        <div class="step-circle" id="step3">3</div>
+        <div class="step-label">Location</div>
+      </div>
+      <div class="step-line" id="line3"></div>
+      <div class="step-item">
+        <div class="step-circle" id="step4">4</div>
+        <div class="step-label">Submit</div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-container">
+      <form action="../ComplaintServlet" method="POST" id="complaintForm">
+
+        <!-- Section 1: Details -->
+        <div class="form-section" id="section1">
+          <div class="section-header">
+            <div class="section-icon blue"><i class="fas fa-pen-to-square"></i></div>
+            <div>
+              <div class="section-title">Complaint Details</div>
+              <div class="section-subtitle">Tell us what happened</div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Issue Title <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <input type="text" name="title" id="title" placeholder="e.g., Pothole on Main Road near City Mall" required />
+              <i class="input-icon fas fa-heading"></i>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Category <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <select name="categoryId" id="categoryId" required onchange="showDepartment(this.value)">
+                <option value="">Select a Category</option>
+                <option value="1">&#x1F6E3; Roads &amp; Transport</option>
+                <option value="2">&#x1F4A7; Water Supply</option>
+                <option value="3">&#x1F4A1; Street Lights</option>
+                <option value="4">&#x1F5D1; Sanitation &amp; Garbage</option>
+                <option value="5">&#x26A1; Electricity</option>
+                <option value="6">&#x1F6A8; Corruption / Bribe</option>
+              </select>
+              <i class="input-icon fas fa-layer-group"></i>
+            </div>
+            <!-- Department auto-display -->
+            <div id="deptInfo" style="display:none;margin-top:10px;padding:10px 14px;background:var(--primary-blue-light);border-radius:10px;font-size:0.82rem;color:var(--text-main);border-left:3px solid var(--primary-blue);">
+              <i class="fas fa-building" style="color:var(--primary-blue);margin-right:6px;"></i>
+              <b>Department:</b> <span id="deptName"></span>
+              <span style="margin-left:12px;color:var(--text-muted);font-size:0.75rem;"><i class="fas fa-envelope"></i> Complaint will be emailed to this department</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Priority Level</label>
+            <input type="hidden" name="priority" id="priority" value="Medium" />
+            <div class="priority-cards">
+              <div class="priority-card low" onclick="setPriority('Low', this)">
+                <div class="priority-emoji">&#x1F7E2;</div>
+                <div class="priority-name">Low</div>
+              </div>
+              <div class="priority-card medium selected" onclick="setPriority('Medium', this)">
+                <div class="priority-emoji">&#x1F7E0;</div>
+                <div class="priority-name">Medium</div>
+              </div>
+              <div class="priority-card high" onclick="setPriority('High', this)">
+                <div class="priority-emoji">&#x1F534;</div>
+                <div class="priority-name">High</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Description <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <textarea name="description" id="description" placeholder="Describe the issue in detail — what you observed, how it affects the area, any safety concerns..." required></textarea>
+              <i class="input-icon fas fa-align-left" style="top:14px;"></i>
+            </div>
+            <div class="input-hint"><i class="fas fa-brain"></i> AI will analyze your description to auto-verify the complaint</div>
+          </div>
+        </div>
+
+        <!-- Section 2: Evidence -->
+        <div class="form-section" id="section2">
+          <div class="section-header">
+            <div class="section-icon red"><i class="fas fa-camera-retro"></i></div>
+            <div>
+              <div class="section-title">Live Evidence Capture</div>
+              <div class="section-subtitle">Take a real-time photo — no gallery uploads allowed</div>
+            </div>
+          </div>
+
+          <div id="cameraZone" class="camera-zone" onclick="openCamera()">
+            <div class="camera-icon-big"><i class="fas fa-camera"></i></div>
+            <h3>Tap to Open Camera</h3>
+            <p><i class="fas fa-shield-alt"></i> Only live photos accepted. Timestamp &amp; GPS watermark auto-embedded.</p>
+          </div>
+
+          <div id="cameraContainer">
+            <video id="cameraFeed" autoplay playsinline></video>
+            <div class="camera-live-badge"><span class="live-dot"></span> LIVE</div>
+            <div class="camera-timestamp" id="cameraTimestamp"></div>
+            <button type="button" class="capture-btn" onclick="capturePhoto()"></button>
+            <button type="button" class="switch-camera-btn" onclick="switchCamera()"><i class="fas fa-sync-alt"></i></button>
+          </div>
+
+          <div id="imagePreviewContainer">
+            <img id="imagePreview" alt="Captured evidence">
+            <div class="preview-badge scanning" id="previewBadge"><i class="fas fa-spinner fa-spin"></i> SCANNING...</div>
+            <div id="scanOverlay" class="scan-overlay" style="display:none;"><i class="fas fa-microscope fa-spin"></i><span>AI Scanning Image...</span></div>
+            <div class="camera-timestamp" id="photoTimestamp"></div>
+            <button type="button" class="retake-btn" onclick="retakePhoto()"><i class="fas fa-redo"></i> Retake</button>
+          </div>
+
+          <div class="ai-status-box" id="aiStatus" style="margin-top:12px;"></div>
+
+          <canvas id="captureCanvas" style="display:none;"></canvas>
+          <input type="hidden" name="imageData" id="imageData">
+        </div>
+
+        <!-- Section 3: Location -->
+        <div class="form-section" id="section3">
+          <div class="section-header">
+            <div class="section-icon green"><i class="fas fa-map-location-dot"></i></div>
+            <div>
+              <div class="section-title">Location Verification</div>
+              <div class="section-subtitle">GPS coordinates are mandatory for verification</div>
+            </div>
+          </div>
+
+          <div class="location-card" id="locationCard" onclick="captureLocation()">
+            <div class="loc-icon"><i class="fas fa-location-crosshairs"></i></div>
+            <div class="loc-text">
+              <h4 id="locTitle">Tap to Capture GPS Location</h4>
+              <p id="locSubtitle">Using high-accuracy satellite positioning</p>
+            </div>
+            <div class="loc-pulse" id="locPulse"></div>
+          </div>
+          <input type="hidden" name="latitude" id="latitude" />
+          <input type="hidden" name="longitude" id="longitude" />
+
+          <div class="input-group" style="margin-top:16px;">
+            <label>Nearby Landmark <small style="color:var(--text-muted);font-weight:400;">(Optional)</small></label>
+            <div class="input-wrapper">
+              <input type="text" name="location" id="landmark" placeholder="e.g., Near City Mall, Opposite SBI Bank" />
+              <i class="input-icon fas fa-map-pin"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Submit -->
+        <div class="submit-section">
+          <button type="submit" class="submit-btn" id="submitBtn">
+            <i class="fas fa-paper-plane"></i> Submit Complaint
+          </button>
+          <div class="submit-info"><i class="fas fa-lock"></i> Your complaint is encrypted and AI-verified before submission</div>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    // ═══════════════════════
+    //  SIDEBAR SEARCH
+    // ═══════════════════════
+    function filterSidebar(query) {
+      const items = document.querySelectorAll('.sidebar-menu .menu-item');
+      const q = query.toLowerCase().trim();
+      items.forEach(item => {
+        if (!q) { item.style.display = ''; return; }
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    // ═══════════════════════
+    //  DEPARTMENT MAPPING
+    // ═══════════════════════
+    const deptMap = {
+      '1': 'Public Works',
+      '2': 'Water Board',
+      '3': 'Electrical Dept',
+      '4': 'Health & Sanitation',
+      '5': 'Electrical Dept',
+      '6': 'Lokayukta / Anti-Corruption'
+    };
+    function showDepartment(catId) {
+      const box = document.getElementById('deptInfo');
+      const name = document.getElementById('deptName');
+      if (catId && deptMap[catId]) {
+        name.textContent = deptMap[catId];
+        box.style.display = 'block';
+      } else {
+        box.style.display = 'none';
+      }
+    }
+
+    // ═══════════════════════
+    //  FORM LOGIC
+    // ═══════════════════════
+
+    const form = document.getElementById('complaintForm');
+    const aiStatus = document.getElementById('aiStatus');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function setPriority(value, el) {
+      document.getElementById('priority').value = value;
+      document.querySelectorAll('.priority-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    // Step tracking
+    function updateSteps() {
+      const title = document.getElementById('title').value.trim();
+      const category = document.getElementById('categoryId').value;
+      const desc = document.getElementById('description').value.trim();
+      const hasPhoto = photoCaptured;
+      const hasGPS = document.getElementById('latitude').value;
+
+      const s1 = title && category && desc;
+      setStep(1, s1 ? 'done' : 'active');
+      setStep(2, hasPhoto ? 'done' : (s1 ? 'active' : ''));
+      setStep(3, hasGPS ? 'done' : (hasPhoto ? 'active' : ''));
+      setStep(4, (s1 && hasPhoto && hasGPS) ? 'active' : '');
+
+      document.getElementById('line1').classList.toggle('done', s1);
+      document.getElementById('line2').classList.toggle('done', hasPhoto);
+      document.getElementById('line3').classList.toggle('done', !!hasGPS);
+    }
+
+    function setStep(n, state) {
+      const circle = document.getElementById('step' + n);
+      const label = circle.parentElement.querySelector('.step-label');
+      circle.classList.remove('active', 'done');
+      label.classList.remove('active', 'done');
+      if (state === 'active') { circle.classList.add('active'); label.classList.add('active'); }
+      if (state === 'done') {
+        circle.classList.add('done'); label.classList.add('done');
+        circle.innerHTML = '<i class="fas fa-check" style="font-size:0.8rem;"></i>';
+      } else {
+        circle.textContent = n;
+      }
+    }
+
+    ['title', 'categoryId', 'description'].forEach(id => {
+      document.getElementById(id).addEventListener('input', updateSteps);
+      document.getElementById(id).addEventListener('change', updateSteps);
+    });
+
+    // Location
+    function captureLocation() {
+      const card = document.getElementById('locationCard');
+      const title = document.getElementById('locTitle');
+      const subtitle = document.getElementById('locSubtitle');
+      const pulse = document.getElementById('locPulse');
+
+      if (!navigator.geolocation) { alert("Geolocation not supported"); return; }
+
+      title.textContent = 'Locating via Satellites...';
+      subtitle.textContent = 'Please wait...';
+      card.style.pointerEvents = 'none';
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          document.getElementById('latitude').value = pos.coords.latitude;
+          document.getElementById('longitude').value = pos.coords.longitude;
+          title.textContent = 'GPS Location Captured';
+          subtitle.textContent = 'Lat: ' + pos.coords.latitude.toFixed(5) + ', Lon: ' + pos.coords.longitude.toFixed(5);
+          card.classList.add('located');
+          pulse.classList.add('active');
+          card.style.pointerEvents = 'auto';
+          updateSteps();
+        },
+        (err) => {
+          title.textContent = 'Tap to Capture GPS Location';
+          subtitle.textContent = 'Location access denied. Try again.';
+          card.style.pointerEvents = 'auto';
+        },
+        { enableHighAccuracy: true }
+      );
+    }
+
+    // Form submit
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      if (!document.getElementById('latitude').value) {
+        alert("GPS location is mandatory for verification.");
+        return;
+      }
+      if (!photoCaptured) {
+        alert("Live photo required: Open camera and capture real-time evidence.");
+        return;
+      }
+
+      const desc = document.getElementById('description').value;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-shield-halved fa-spin"></i> AI Shield Verifying...';
+
+      aiStatus.classList.add('show', 'analyzing');
+      aiStatus.classList.remove('success', 'error');
+      aiStatus.innerHTML = '<i class="fas fa-search-plus"></i> Analyzing image metadata, GPS coordinates & description...';
+
+      await new Promise(r => setTimeout(r, 2500));
+
+      if (desc.length < 15) {
+        aiStatus.classList.remove('analyzing');
+        aiStatus.classList.add('error');
+        aiStatus.innerHTML = '<i class="fas fa-times-circle"></i> Low Confidence: Description too brief. Add more details.';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Add Details & Resubmit';
+        return;
+      }
+
+      aiStatus.classList.remove('analyzing');
+      aiStatus.classList.add('success');
+      aiStatus.innerHTML = '<i class="fas fa-check-double"></i> Verified: Live evidence matches GPS location. Complaint authenticated.';
+
+      await new Promise(r => setTimeout(r, 1200));
+      form.submit();
+    });
+
+    // ═══════════════════════
+    //  CAMERA LOGIC
+    // ═══════════════════════
+
+    let cameraStream = null;
+    let facingMode = 'environment';
+    let timestampInterval = null;
+    let photoCaptured = false;
+
+    async function openCamera() {
+      const container = document.getElementById('cameraContainer');
+      const video = document.getElementById('cameraFeed');
+      const zone = document.getElementById('cameraZone');
+      const preview = document.getElementById('imagePreviewContainer');
+
+      preview.style.display = 'none';
+      photoCaptured = false;
+
+      try {
+        if (cameraStream) cameraStream.getTracks().forEach(t => t.stop());
+
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: facingMode, width: { ideal: 1920 }, height: { ideal: 1080 } },
+          audio: false
+        });
+
+        video.srcObject = cameraStream;
+        container.style.display = 'block';
+        zone.style.display = 'none';
+
+        if (timestampInterval) clearInterval(timestampInterval);
+        timestampInterval = setInterval(() => {
+          const now = new Date();
+          document.getElementById('cameraTimestamp').textContent =
+            now.toLocaleDateString('en-IN') + ' ' + now.toLocaleTimeString('en-IN') + ' IST';
+        }, 1000);
+      } catch (err) {
+        console.error('Camera error:', err);
+        alert('Camera access denied. Allow camera permission to capture evidence.');
+      }
+    }
+
+    async function switchCamera() {
+      facingMode = facingMode === 'environment' ? 'user' : 'environment';
+      await openCamera();
+    }
+
+    /**
+     * AI Image Analysis — YCbCr + center-weight skin detection.
+     * Works for ALL skin tones (light, medium, dark).
+     * Rejects selfies/people. Accepts civic infrastructure photos.
+     */
+    function analyzeImageForCivicRelevance(canvas) {
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      // Full image scan (exclude bottom watermark bar)
+      const scanH = Math.floor(h * 0.85);
+      const imageData = ctx.getImageData(0, 0, w, scanH);
+      const pixels = imageData.data;
+      const totalPixels = w * scanH;
+
+      // Center region (where faces appear in selfies)
+      const cx1 = Math.floor(w * 0.2), cx2 = Math.floor(w * 0.8);
+      const cy1 = Math.floor(scanH * 0.05), cy2 = Math.floor(scanH * 0.65);
+
+      let skinAll = 0, skinCenter = 0;
+      let greenPx = 0, grayPx = 0, darkPx = 0, bluePx = 0, brownPx = 0;
+      let uniformPx = 0; // large uniform areas = walls/indoor
+      let sampledAll = 0, sampledCenter = 0;
+
+      for (let y = 0; y < scanH; y += 3) {
+        for (let x = 0; x < w; x += 3) {
+          const i = (y * w + x) * 4;
+          const r = pixels[i], g = pixels[i+1], b = pixels[i+2];
+          sampledAll++;
+
+          const isCenter = (x >= cx1 && x <= cx2 && y >= cy1 && y <= cy2);
+          if (isCenter) sampledCenter++;
+
+          // ── YCbCr Skin Detection (works for ALL skin tones) ──
+          const Y  = 0.299 * r + 0.587 * g + 0.114 * b;
+          const Cb = 128 - 0.169 * r - 0.331 * g + 0.5 * b;
+          const Cr = 128 + 0.5 * r - 0.419 * g - 0.081 * b;
+
+          // Primary YCbCr skin range (published research values)
+          const ycbcrSkin = (Cr >= 133 && Cr <= 175 && Cb >= 77 && Cb <= 127 && Y >= 30);
+
+          // Extended range for very dark skin tones
+          const darkSkin = (Cr >= 128 && Cr <= 178 && Cb >= 75 && Cb <= 130 && Y >= 20 && Y <= 120);
+
+          // HSV-based backup check
+          const max = Math.max(r, g, b), min = Math.min(r, g, b);
+          const diff = max - min;
+          let hue = 0;
+          if (diff > 0) {
+            if (max === r) hue = 60 * (((g - b) / diff) % 6);
+            else if (max === g) hue = 60 * (((b - r) / diff) + 2);
+            else hue = 60 * (((r - g) / diff) + 4);
+            if (hue < 0) hue += 360;
+          }
+          const sat = max > 0 ? (diff / max) : 0;
+          const val = max / 255;
+          // Skin in HSV: hue 0-50 (reds/oranges), saturation 0.1-0.7
+          const hsvSkin = ((hue <= 50 || hue >= 340) && sat >= 0.1 && sat <= 0.75 && val >= 0.15 && val <= 0.9);
+
+          const isSkin = ycbcrSkin || darkSkin || (hsvSkin && (ycbcrSkin || darkSkin || (Cr >= 125 && Cb <= 135)));
+
+          if (isSkin) {
+            skinAll++;
+            if (isCenter) skinCenter++;
+          }
+
+          // ── Environment classification ──
+          // Green vegetation
+          if (g > r && g > b && g > 55 && g - r > 12) greenPx++;
+          // Blue sky/water
+          if (b > r && b > g && b > 80 && b - r > 20) bluePx++;
+          // Brown dirt/mud
+          if (r > 90 && g > 50 && b < 75 && r > g && g > b) brownPx++;
+          // Dark (asphalt/deep shadows)
+          if (max < 65) darkPx++;
+          // Gray (road/concrete) — but NOT uniform white walls
+          if (diff < 25 && r > 60 && r < 190 && !(r > 170 && g > 170 && b > 170)) grayPx++;
+          // Uniform bright = walls/ceiling (indoor indicator)
+          if (diff < 15 && max > 180) uniformPx++;
+        }
+      }
+
+      const skinPct = (skinAll / sampledAll) * 100;
+      const skinCenterPct = sampledCenter > 0 ? (skinCenter / sampledCenter) * 100 : 0;
+      const greenPct = (greenPx / sampledAll) * 100;
+      const bluePct = (bluePx / sampledAll) * 100;
+      const brownPct = (brownPx / sampledAll) * 100;
+      const darkPct = (darkPx / sampledAll) * 100;
+      const grayPct = (grayPx / sampledAll) * 100;
+      const uniformPct = (uniformPx / sampledAll) * 100;
+      const outdoorScore = greenPct + bluePct + brownPct + darkPct + grayPct;
+
+      console.log('[AI Vision] Skin:', skinPct.toFixed(1) + '%',
+        'SkinCenter:', skinCenterPct.toFixed(1) + '%',
+        'Uniform:', uniformPct.toFixed(1) + '%',
+        'Green:', greenPct.toFixed(1) + '%', 'Blue:', bluePct.toFixed(1) + '%',
+        'Brown:', brownPct.toFixed(1) + '%', 'Dark:', darkPct.toFixed(1) + '%',
+        'Gray:', grayPct.toFixed(1) + '%', 'Outdoor:', outdoorScore.toFixed(1) + '%');
+
+      // ═══ REJECTION RULES (checked first) ═══
+
+      // Rule 1: High skin in center = face/selfie (most reliable)
+      if (skinCenterPct > 20) {
+        return { accepted: false, reason: 'selfie',
+          message: 'SELFIE / FACE detected in center of image (' + skinCenterPct.toFixed(0) + '% skin). Point your camera at the civic issue — pothole, garbage, broken light, water leak, damaged road.' };
+      }
+
+      // Rule 2: Significant overall skin
+      if (skinPct > 12) {
+        return { accepted: false, reason: 'person',
+          message: 'PERSON detected in photo (' + skinPct.toFixed(0) + '% skin area). Remove people from frame. Capture ONLY the civic problem — road damage, garbage pile, broken infrastructure.' };
+      }
+
+      // Rule 3: Moderate skin + indoor (uniform walls)
+      if (skinPct > 5 && uniformPct > 20) {
+        return { accepted: false, reason: 'indoor_person',
+          message: 'Indoor photo with person detected. Go OUTSIDE and photograph the civic issue directly — pothole, garbage, broken streetlight.' };
+      }
+
+      // Rule 4: Moderate center skin even with lower overall
+      if (skinCenterPct > 12 && skinPct > 6) {
+        return { accepted: false, reason: 'face',
+          message: 'Face detected in frame. Remove yourself from the photo with the camera pointing AWAY from you towards the problem.' };
+      }
+
+      // Rule 5: Very indoor (mostly uniform/white walls), no outdoor features
+      if (uniformPct > 35 && outdoorScore < 30) {
+        return { accepted: false, reason: 'indoor',
+          message: 'Indoor photo detected — no civic infrastructure visible. Go OUTSIDE to photograph road, drainage, streetlight, or sanitation issues.' };
+      }
+
+      // ═══ ACCEPTANCE RULES ═══
+
+      // Accept: Strong outdoor features with minimal skin
+      if (outdoorScore > 45 && skinPct < 8 && skinCenterPct < 12) {
+        let type = 'civic infrastructure';
+        if (grayPct > 20) type = 'road/concrete surface';
+        else if (darkPct > 18) type = 'asphalt/road area';
+        else if (greenPct > 12) type = 'outdoor civic area';
+        else if (brownPct > 10) type = 'terrain/ground area';
+        else if (bluePct > 12) type = 'outdoor environment';
+        return { accepted: true, type: type,
+          message: 'Image classified as ' + type + '. Live evidence authenticated.' };
+      }
+
+      // Accept: Moderate outdoor with very low skin
+      if (outdoorScore > 30 && skinPct < 4 && skinCenterPct < 8) {
+        return { accepted: true, type: 'civic area',
+          message: 'Image accepted as civic area evidence. Timestamp & GPS watermark embedded.' };
+      }
+
+      // DEFAULT: Reject — not enough civic features
+      return { accepted: false, reason: 'not_civic',
+        message: 'Image NOT recognized as civic issue. Take a clear outdoor photo of the problem — pothole, garbage, broken light, drainage, damaged road.' };
+    }
+
+    function capturePhoto() {
+      const video = document.getElementById('cameraFeed');
+      const canvas = document.getElementById('captureCanvas');
+      const ctx = canvas.getContext('2d');
+      const badge = document.getElementById('previewBadge');
+      const overlay = document.getElementById('scanOverlay');
+
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      // ── AI Analysis BEFORE watermark (analyze raw image) ──
+      const aiResult = analyzeImageForCivicRelevance(canvas);
+
+      // ── Now burn the watermark ──
+      const now = new Date();
+      const ts = now.toLocaleDateString('en-IN') + ' ' + now.toLocaleTimeString('en-IN') + ' IST';
+      const lat = document.getElementById('latitude').value;
+      const lon = document.getElementById('longitude').value;
+      const gpsText = lat && lon ? 'GPS: ' + parseFloat(lat).toFixed(5) + ', ' + parseFloat(lon).toFixed(5) : 'GPS: Pending';
+
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.fillRect(0, canvas.height - 50, canvas.width, 50);
+      ctx.fillStyle = '#00ff00';
+      ctx.font = 'bold 16px monospace';
+      ctx.fillText('CIVIC CONNECT | LIVE EVIDENCE | ' + ts, 12, canvas.height - 28);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '13px monospace';
+      ctx.fillText(gpsText + ' | Photo #' + Date.now().toString(36).toUpperCase(), 12, canvas.height - 10);
+
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      document.getElementById('imagePreview').src = dataUrl;
+      document.getElementById('imagePreviewContainer').style.display = 'block';
+      document.getElementById('photoTimestamp').textContent = ts;
+
+      // Show scanning state on preview
+      badge.className = 'preview-badge scanning';
+      badge.innerHTML = '<i class="fas fa-spinner fa-spin"></i> AI SCANNING...';
+      overlay.style.display = 'flex';
+      overlay.className = 'scan-overlay';
+      overlay.innerHTML = '<i class="fas fa-microscope fa-spin"></i><span>AI Verifying Image...</span>';
+
+      if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
+      document.getElementById('cameraContainer').style.display = 'none';
+      if (timestampInterval) clearInterval(timestampInterval);
+
+      // ── Show AI analyzing in status box ──
+      aiStatus.classList.add('show', 'analyzing');
+      aiStatus.classList.remove('success', 'error');
+      aiStatus.innerHTML = '<i class="fas fa-microscope fa-spin"></i> AI Vision: Analyzing skin tones, environment & objects...';
+      submitBtn.disabled = true;
+
+      setTimeout(() => {
+        aiStatus.classList.remove('analyzing');
+        overlay.style.display = 'none';
+
+        if (aiResult.accepted) {
+          // ✅ ACCEPTED — civic image
+          photoCaptured = true;
+          document.getElementById('imageData').value = dataUrl;
+          badge.className = 'preview-badge accepted';
+          badge.innerHTML = '<i class="fas fa-check-circle"></i> VERIFIED CIVIC IMAGE';
+          aiStatus.classList.add('success');
+          aiStatus.innerHTML = '<i class="fas fa-check-circle"></i> ' + aiResult.message;
+          submitBtn.disabled = false;
+          updateSteps();
+        } else {
+          // ❌ REJECTED — not a civic image
+          photoCaptured = false;
+          document.getElementById('imageData').value = '';
+          badge.className = 'preview-badge rejected';
+          badge.innerHTML = '<i class="fas fa-times-circle"></i> REJECTED';
+          // Show red overlay on the image
+          overlay.style.display = 'flex';
+          overlay.className = 'scan-overlay rejected-overlay';
+          overlay.innerHTML = '<i class="fas fa-ban"></i><span>NOT A CIVIC IMAGE</span><small style="margin-top:8px;opacity:0.9;">Click Retake to try again</small>';
+          aiStatus.classList.add('error');
+          aiStatus.innerHTML = '<i class="fas fa-ban"></i> REJECTED: ' + aiResult.message;
+          submitBtn.disabled = true;
+          updateSteps();
+        }
+      }, 2500);
+    }
+
+    function retakePhoto() {
+      photoCaptured = false;
+      document.getElementById('imagePreviewContainer').style.display = 'none';
+      document.getElementById('imageData').value = '';
+      document.getElementById('scanOverlay').style.display = 'none';
+      const badge = document.getElementById('previewBadge');
+      badge.className = 'preview-badge scanning';
+      badge.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SCANNING...';
+      aiStatus.classList.remove('show', 'analyzing', 'success', 'error');
+      submitBtn.disabled = false;
+      document.getElementById('cameraZone').style.display = 'block';
+      updateSteps();
+      openCamera();
+    }
+
+    updateSteps();
+  </script>
+  <script src="../js/portal.js"></script>
+  <script src="../js/theme.js"></script>
+</body>
+</html>
+

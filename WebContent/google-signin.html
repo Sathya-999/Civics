@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign in - Google Accounts</title>
+<link rel="icon" href="https://accounts.google.com/favicon.ico">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:'Google Sans','Segoe UI',Roboto,Arial,Helvetica,sans-serif;background:#f0f4f9;display:flex;align-items:center;justify-content:center;min-height:100vh}
+
+.container{background:#fff;border-radius:28px;width:450px;max-width:96vw;padding:48px 40px 36px;box-shadow:0 1px 3px 0 rgba(60,64,67,.15);position:relative}
+
+.g-logo{display:flex;justify-content:center;margin-bottom:16px}
+.g-logo svg{height:24px}
+
+h1{font-size:24px;font-weight:400;color:#202124;text-align:center;margin-bottom:4px;letter-spacing:0}
+.desc{text-align:center;font-size:16px;color:#5f6368;margin-bottom:32px}
+
+.step{display:none}
+.step.active{display:block}
+
+/* Profile chip */
+.profile-chip{display:inline-flex;align-items:center;gap:8px;padding:2px 14px 2px 2px;border:1px solid #dadce0;border-radius:16px;margin:0 auto 28px;cursor:default}
+.profile-chip .av{width:26px;height:26px;border-radius:50%;background:#1a73e8;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500}
+.profile-chip .em{font-size:14px;color:#3c4043}
+.profile-chip .dd{font-size:10px;color:#5f6368;margin-left:2px}
+
+/* Input */
+.field{margin-bottom:2px;position:relative}
+.field input{width:100%;padding:13px 15px;border:1px solid #dadce0;border-radius:4px;font-size:16px;color:#202124;outline:none;background:#fff;font-family:inherit;transition:border .15s}
+.field input:focus{border:2px solid #1a73e8;padding:12px 14px}
+.field input::placeholder{color:transparent}
+.field label{position:absolute;left:15px;top:14px;color:#5f6368;font-size:16px;pointer-events:none;transition:.15s ease;background:#fff;padding:0 5px}
+.field input:focus+label,.field input:not(:placeholder-shown)+label{top:-8px;font-size:12px;color:#1a73e8}
+.field input:not(:focus):not(:placeholder-shown)+label{color:#5f6368}
+
+/* Error */
+.err{display:none;color:#d93025;font-size:12px;margin-top:8px;align-items:center;gap:4px}
+.err svg{flex-shrink:0}
+.err.show{display:flex}
+
+/* Links */
+.links{margin:16px 0 28px}
+.links a{color:#1a73e8;text-decoration:none;font-size:14px;font-weight:500}
+.links a:hover{text-decoration:underline}
+
+/* Info */
+.info{font-size:12px;color:#5f6368;line-height:1.7;margin-bottom:28px}
+.info a{color:#1a73e8;text-decoration:none}
+
+/* Checkbox */
+.chk{display:flex;align-items:center;gap:12px;margin:20px 0 36px}
+.chk input{width:18px;height:18px;accent-color:#1a73e8}
+.chk label{font-size:14px;color:#202124;cursor:pointer;user-select:none}
+
+/* Bottom */
+.btm{display:flex;justify-content:space-between;align-items:center}
+.btm a{color:#1a73e8;font-size:14px;font-weight:500;text-decoration:none}
+.btm a:hover{text-decoration:underline}
+.btn{background:#1a73e8;color:#fff;border:none;padding:10px 24px;border-radius:4px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;letter-spacing:.25px;transition:.15s}
+.btn:hover{background:#1765cc;box-shadow:0 1px 3px 1px rgba(66,133,244,.3)}
+
+/* Footer */
+.ftr{display:flex;justify-content:space-between;align-items:center;margin-top:28px}
+.ftr select{border:none;background:none;color:#5f6368;font-size:12px;cursor:pointer;outline:none;font-family:inherit}
+.ftr-links{display:flex;gap:20px}
+.ftr-links a{color:#5f6368;font-size:12px;text-decoration:none}
+
+/* Loading */
+.loading{text-align:center;padding:48px 0 24px}
+.loading .spin{width:44px;height:44px;margin:0 auto 28px;border:3.5px solid #e8eaed;border-top-color:#1a73e8;border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Back arrow */
+.back{position:absolute;top:52px;left:14px;background:none;border:none;cursor:pointer;padding:10px;border-radius:50%;color:#5f6368;font-size:20px;display:none;line-height:1;transition:.15s}
+.back:hover{background:#f1f3f4}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <button class="back" id="backBtn" onclick="goBack()">&#8592;</button>
+
+  <div class="g-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 74 24" height="24">
+      <path fill="#4285F4" d="M9.24 8.19v2.46h5.88c-.18 1.38-.64 2.39-1.34 3.1-.86.86-2.2 1.8-4.54 1.8-3.62 0-6.45-2.92-6.45-6.54s2.83-6.54 6.45-6.54c1.95 0 3.38.77 4.43 1.76L15.4 2.5C13.94 1.08 11.98 0 9.24 0 4.28 0 .11 4.04.11 9s4.17 9 9.13 9c2.68 0 4.7-.88 6.28-2.52 1.62-1.62 2.13-3.91 2.13-5.75 0-.57-.04-1.1-.13-1.54H9.24z"/>
+      <path fill="#EA4335" d="M25 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.34 2.62 5.81 5.83 5.81s5.83-2.46 5.83-5.81c0-3.37-2.62-5.81-5.83-5.81zm0 9.33c-1.76 0-3.28-1.45-3.28-3.52 0-2.09 1.52-3.52 3.28-3.52s3.28 1.43 3.28 3.52c0 2.07-1.52 3.52-3.28 3.52z"/>
+      <path fill="#FBBC05" d="M53.58 7.49h-.09c-.57-.68-1.67-1.3-3.06-1.3C47.53 6.19 45 8.72 45 12c0 3.26 2.53 5.81 5.43 5.81 1.39 0 2.49-.62 3.06-1.32h.09v.81c0 2.22-1.19 3.41-3.1 3.41-1.56 0-2.53-1.12-2.93-2.07l-2.22.92c.64 1.54 2.33 3.43 5.15 3.43 2.99 0 5.52-1.76 5.52-6.05V6.49h-2.42v1zm-2.93 8.03c-1.76 0-3.1-1.5-3.1-3.52 0-2.05 1.34-3.52 3.1-3.52 1.74 0 3.1 1.5 3.1 3.54 0 2.02-1.36 3.5-3.1 3.5z"/>
+      <path fill="#4285F4" d="M58 .24h2.51v17.57H58z"/>
+      <path fill="#34A853" d="M38.56 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.34 2.62 5.81 5.83 5.81s5.83-2.46 5.83-5.81c0-3.37-2.62-5.81-5.83-5.81zm0 9.33c-1.76 0-3.28-1.45-3.28-3.52 0-2.09 1.52-3.52 3.28-3.52s3.28 1.43 3.28 3.52c0 2.07-1.52 3.52-3.28 3.52z"/>
+      <path fill="#EA4335" d="M68.65 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.34 2.62 5.81 5.83 5.81 3.21 0 5.83-2.46 5.83-5.81-.01-3.37-2.63-5.81-5.83-5.81zm0 9.33c-1.76 0-3.28-1.45-3.28-3.52 0-2.09 1.52-3.52 3.28-3.52 1.76 0 3.28 1.43 3.28 3.52 0 2.07-1.52 3.52-3.28 3.52z"/>
+    </svg>
+  </div>
+
+  <!-- STEP 1: Email -->
+  <div class="step active" id="step1">
+    <h1>Sign in</h1>
+    <p class="desc">to continue to <b>Civic Connect</b></p>
+
+    <div class="field">
+      <input type="email" id="emailIn" placeholder="x" autocomplete="email" autofocus onkeydown="if(event.key==='Enter'){event.preventDefault();nextEmail()}">
+      <label for="emailIn">Email or phone</label>
+    </div>
+    <div class="err" id="emailErr">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#d93025" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+      <span id="emailErrTxt">Enter an email or phone number</span>
+    </div>
+
+    <div class="links"><a href="javascript:void(0)">Forgot email?</a></div>
+
+    <p class="info">Not your computer? Use Guest mode to sign in privately. <a href="javascript:void(0)">Learn more about using Guest mode</a></p>
+
+    <div class="btm">
+      <a href="javascript:void(0)">Create account</a>
+      <button class="btn" onclick="nextEmail()">Next</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Name -->
+  <div class="step" id="step2">
+    <h1>Welcome</h1>
+    <div style="text-align:center">
+      <div class="profile-chip">
+        <div class="av" id="avLetter">U</div>
+        <span class="em" id="emailShow">user@gmail.com</span>
+        <span class="dd">&#9660;</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <input type="text" id="nameIn" placeholder="x" autocomplete="name" onkeydown="if(event.key==='Enter'){event.preventDefault();nextName()}">
+      <label for="nameIn">Enter your name</label>
+    </div>
+    <div class="err" id="nameErr">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#d93025" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+      <span>Enter your name</span>
+    </div>
+
+    <div class="chk">
+      <input type="checkbox" id="rememberChk" checked>
+      <label for="rememberChk">Remember this account</label>
+    </div>
+
+    <div class="btm">
+      <span></span>
+      <button class="btn" onclick="nextName()">Next</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Signing in -->
+  <div class="step" id="step3">
+    <div class="loading">
+      <div class="spin"></div>
+      <h1 style="margin-bottom:10px;font-size:22px">Signing in...</h1>
+      <p style="font-size:14px;color:#5f6368" id="signingEmail"></p>
+    </div>
+  </div>
+
+  <div class="ftr">
+    <select><option>English (United States)</option><option>Hindi</option><option>Tamil</option></select>
+    <div class="ftr-links">
+      <a href="javascript:void(0)">Help</a>
+      <a href="javascript:void(0)">Privacy</a>
+      <a href="javascript:void(0)">Terms</a>
+    </div>
+  </div>
+</div>
+
+<script>
+var email='', name='';
+
+function nextEmail(){
+  var v=document.getElementById('emailIn').value.trim();
+  var e=document.getElementById('emailErr');
+  if(!v){document.getElementById('emailErrTxt').textContent='Enter an email or phone number';e.classList.add('show');return}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){document.getElementById('emailErrTxt').textContent="Couldn\u2019t find your Google Account";e.classList.add('show');return}
+  e.classList.remove('show');
+  email=v;
+
+  document.getElementById('emailShow').textContent=email;
+  document.getElementById('avLetter').textContent=email[0].toUpperCase();
+
+  // Check if returning user
+  var known=null;
+  try{
+    var p=localStorage.getItem('civicUserProfile');
+    if(p){var o=JSON.parse(p);if(o.email===email) known=o;}
+    if(!known){var g=localStorage.getItem('civicGoogleAccounts');if(g){var a=JSON.parse(g);known=a.find(function(x){return x.email===email});}}
+  }catch(x){}
+
+  if(known&&(known.fullName||known.name)){
+    name=known.fullName||known.name;
+    go('step3');finishSignIn();return;
+  }
+  go('step2');document.getElementById('nameIn').focus();
+}
+
+function nextName(){
+  var v=document.getElementById('nameIn').value.trim();
+  var e=document.getElementById('nameErr');
+  if(!v){e.classList.add('show');return}
+  e.classList.remove('show');
+  name=v;
+  go('step3');finishSignIn();
+}
+
+function goBack(){go('step1');document.getElementById('emailIn').focus()}
+
+function go(id){
+  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active')});
+  document.getElementById(id).classList.add('active');
+  document.getElementById('backBtn').style.display=id==='step2'?'block':'none';
+  if(id==='step3')document.getElementById('signingEmail').textContent=email;
+}
+
+function finishSignIn(){
+  var accts=[];
+  try{var g=localStorage.getItem('civicGoogleAccounts');if(g)accts=JSON.parse(g)}catch(x){}
+  if(!accts.find(function(a){return a.email===email})){accts.push({fullName:name,email:email});localStorage.setItem('civicGoogleAccounts',JSON.stringify(accts))}
+  localStorage.setItem('civicUserProfile',JSON.stringify({fullName:name,email:email}));
+
+  setTimeout(function(){
+    if(window.opener){window.opener.postMessage({type:'google-signin',name:name,email:email},'*')}
+    setTimeout(function(){window.close()},500);
+  },1400);
+}
+
+window.onload=function(){document.getElementById('emailIn').focus()};
+</script>
+</body>
+</html>

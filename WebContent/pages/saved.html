@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Civic Connect | Saved Items</title>
+  <link rel="stylesheet" href="../css/portal.css?v=1.1">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div style="font-weight: 800; color: #007bff; font-size: 1.2rem; margin-bottom: 20px;">CIVIC CONNECT</div>
+      <div class="search-container">
+        <div class="notification-bell"><i class="far fa-bell"></i><span class="bell-badge">0</span></div>
+        <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Search"></div>
+      </div>
+    </div>
+    <div class="sidebar-menu">
+      <a class="menu-item" href="verify.html"><i class="fas fa-qrcode"></i><span class="menu-item-text">Scan QR Code</span></a>
+      <a class="menu-item" href="dashboard.html"><i class="fas fa-home"></i><span class="menu-item-text">Dashboard</span></a>
+      <a class="menu-item" href="awareness.html"><i class="fas fa-book-open"></i><span class="menu-item-text">Civic Awareness</span></a>
+      <a class="menu-item" href="quizzes.html"><i class="fas fa-edit"></i><span class="menu-item-text">Civic Tests</span></a>
+      <a class="menu-item" href="tasks.html"><i class="fas fa-clipboard-list"></i><span class="menu-item-text">Community Tasks</span></a>
+      <a class="menu-item" href="faq.html"><i class="fas fa-question-circle"></i><span class="menu-item-text">FAQ & Laws</span></a>
+      <a class="menu-item" href="jobs.html"><i class="fas fa-briefcase"></i><span class="menu-item-text">Govt Jobs</span></a>
+      <a class="menu-item active" href="saved.html"><i class="fas fa-bookmark"></i><span class="menu-item-text">Saved Items</span></a>
+      <div class="menu-divider"></div>
+      <a class="menu-item" href="raise-complaint.html"><i class="fas fa-exclamation-circle"></i><span class="menu-item-text">Report an issue</span></a>
+      <a class="menu-item" href="chatbot.html"><i class="fas fa-robot"></i><span class="menu-item-text">Ask CAI</span></a>
+      <a class="menu-item" href="personal-info.html"><i class="fas fa-user"></i><span class="menu-item-text">Profile</span></a>
+      <div class="theme-toggle-container">
+        <button id="theme-toggle" class="theme-toggle-btn">
+          <i class="fas fa-moon"></i>
+          <span>Dark Mode</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="content-header">
+      <h1 style="color: var(--text-main);">Your Saved Items</h1>
+      <p style="color: var(--text-muted);">Quick access to bookmarks, articles, and job notifications.</p>
+    </header>
+
+    <div style="background: var(--card-bg); padding:60px; border-radius:15px; text-align:center; margin-top:20px; color: var(--text-muted);">
+        <i class="fas fa-bookmark" style="font-size:3rem; margin-bottom:20px; color: var(--border-light);"></i>
+        <h3 style="color: var(--text-main);">No items saved yet</h3>
+        <p>Your bookmarked articles and job alerts will appear here.</p>
+    </div>
+  </main>
+  <script src="../js/theme.js"></script>
+</body>
+</html>

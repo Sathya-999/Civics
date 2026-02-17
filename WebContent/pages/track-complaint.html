@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Civic Issues | Track Complaint</title>
+  <link rel="stylesheet" href="../css/portal.css?v=1.1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand-section">
+      <div class="brand-name">
+        <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" rx="10" fill="var(--primary-blue)"/>
+          <path d="M20 6L8 14V28H14V20H18V28H26V20H22V28H32V14L20 6Z" fill="white"/>
+          <rect x="17" y="14" width="6" height="6" rx="1" fill="var(--primary-blue)"/>
+          <circle cx="20" cy="32" r="3" fill="#2ecc71"/>
+        </svg>
+        <span>CIVIC CONNECT</span>
+      </div>
+    </div>
+    <!-- Sidebar Search -->
+    <div style="padding: 0 16px 12px;">
+      <div style="position:relative;">
+        <input type="text" id="sidebarSearch" placeholder="Search pages..." oninput="filterSidebar(this.value)"
+          style="width:100%;padding:9px 12px 9px 34px;border-radius:10px;border:1px solid var(--border-light);background:var(--bg-main);color:var(--text-main);font-size:0.8rem;outline:none;transition:var(--transition);">
+        <i class="fas fa-search" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.75rem;"></i>
+      </div>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="dashboard.html" class="menu-item">
+        <i class="fas fa-th-large"></i> Dashboard
+      </a>
+      <a href="services.html" class="menu-item">
+        <i class="fas fa-hand-holding-heart"></i> Services
+      </a>
+      <a href="raise-complaint.html" class="menu-item">
+        <i class="fas fa-file-signature"></i> Raise Complaint
+      </a>
+      <a href="track-complaint.html" class="menu-item">
+        <i class="fas fa-map-marker-alt"></i> Track Complaint
+      </a>
+      <a href="history.html" class="menu-item">
+        <i class="fas fa-history"></i> My History
+      </a>
+      <a href="chatbot.html" class="menu-item">
+        <i class="fas fa-robot"></i> Ask CAI
+      </a>
+      <div class="menu-divider"></div>
+      <a href="personal-info.html" class="menu-item">
+        <i class="fas fa-user-circle"></i> Profile
+      </a>
+      <a href="#" class="menu-item" id="theme-toggle">
+        <i class="fas fa-moon"></i> <span>Dark Mode</span>
+      </a>
+      <a href="#" onclick="logout()" class="menu-item" style="color: #e74c3c;">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header class="top-bar">
+      <div class="header-title">
+        <h2>Track Your Complaints</h2>
+        <p>Real-time updates on your reported issues and their authority level.</p>
+      </div>
+      
+      <div class="top-actions">
+        <div class="user-profile-pill">
+          <img src="https://ui-avatars.com/api/?name=Member&background=007bff&color=fff" alt="User" class="user-avatar-small">
+          <span class="user-name">Member</span>
+        </div>
+      </div>
+    </header>
+
+    <div id="complaints-container">
+        <!-- Complaints will be loaded here -->
+        <div style="text-align: center; padding: 40px; color: #666;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 10px;"></i>
+            <p>Loading your reports...</p>
+        </div>
+    </div>
+  </main>
+
+  <script>
+    function filterSidebar(query) {
+      const items = document.querySelectorAll('.sidebar-menu .menu-item');
+      const q = query.toLowerCase().trim();
+      items.forEach(item => {
+        if (!q) { item.style.display = ''; return; }
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    async function fetchComplaints() {
+      try {
+        const response = await fetch('../ComplaintServlet?action=list');
+        const complaints = await response.json();
+        const container = document.getElementById('complaints-container');
+        container.innerHTML = '';
+        
+        if(complaints.length === 0) {
+            container.innerHTML = '<div style=\"background:var(--card-bg, white); padding:40px; border-radius:15px; text-align:center; border:1px solid var(--border-light, #eee);\"><i class=\"fas fa-folder-open\" style=\"font-size:2.5rem; color:var(--text-muted, #999); margin-bottom:15px;\"></i><p style=\"color:var(--text-muted, #666);\">No complaints found. <a href=\"raise-complaint.html\" style=\"color:#007bff;\">Raise your first complaint</a></p></div>';
+            return;
+        }
+
+        complaints.forEach(c => {
+          const card = document.createElement('div');
+          card.className = 'complaint-card';
+          
+          let escalationText = "Local Authority";
+          if(c.escalationLevel === 1) escalationText = "Municipal Commissioner";
+          if(c.escalationLevel === 2) escalationText = "State Ministry";
+
+          // Determine available next statuses based on current status
+          let statusActions = '';
+          const status = c.status ? c.status.toLowerCase() : '';
+          if (status === 'open' || status === 'pending') {
+              statusActions = `
+                <div class="status-actions">
+                  <span class="status-label">Update Status:</span>
+                  <button onclick="updateStatus(${c.complaintId}, 'In Progress')" class="btn-status btn-in-progress">Mark In Progress</button>
+                  <button onclick="updateStatus(${c.complaintId}, 'Resolved')" class="btn-status btn-resolved">Mark Resolved</button>
+                </div>`;
+          } else if (status === 'in progress') {
+              statusActions = `
+                <div class="status-actions">
+                  <span class="status-label">Update Status:</span>
+                  <button onclick="updateStatus(${c.complaintId}, 'Resolved')" class="btn-status btn-resolved">Mark Resolved</button>
+                  <button onclick="updateStatus(${c.complaintId}, 'Closed')" class="btn-status btn-closed">Close Complaint</button>
+                </div>`;
+          } else if (status === 'resolved') {
+              statusActions = `
+                <div class="status-actions">
+                  <span class="status-label">Update Status:</span>
+                  <button onclick="updateStatus(${c.complaintId}, 'Closed')" class="btn-status btn-closed">Close Complaint</button>
+                  <button onclick="updateStatus(${c.complaintId}, 'Open')" class="btn-status btn-reopen">Reopen</button>
+                </div>`;
+          }
+
+          card.innerHTML = `
+            <div class="header">
+              <span class="id">ID: #${c.complaintId}</span>
+              <span class="status-badge status-${(c.status || 'open').toLowerCase().replace(/\s+/g, '-')}">${c.status}</span>
+            </div>
+            <h3 class="title">${c.title}</h3>
+            <p class="desc">${c.description}</p>
+            <div class="meta">
+              <span class="priority">Priority: ${c.priority}</span>
+              <span class="level">Authority: <strong>${escalationText}</strong></span>
+              <span class="date">${new Date(c.createdAt).toLocaleDateString()}</span>
+            </div>
+            ${(c.status === 'Open' || c.status === 'Pending' || c.status === 'In Progress') && c.escalationLevel < 2 ? `
+              <button onclick="escalate(${c.complaintId})" class="btn-escalate">Reach Higher Authority</button>
+            ` : ''}
+            ${statusActions}
+          `;
+          container.appendChild(card);
+        });
+      } catch (e) { 
+          console.error(e);
+          document.getElementById('complaints-container').innerHTML = '<div style=\"background:var(--card-bg, white); padding:40px; border-radius:15px; text-align:center; border:1px solid var(--border-light, #eee);\"><p style=\"color:var(--text-muted, #666);\">Error loading complaints. Please try again.</p><button onclick=\"fetchComplaints()\" style=\"margin-top:15px; background:#007bff; color:white; border:none; padding:8px 20px; border-radius:8px; cursor:pointer;\">Retry</button></div>';
+      }
+    }
+
+    async function escalate(id) {
+        if(!confirm("Escalate this to a higher authority?")) return;
+        const res = await fetch('../EscalationServlet', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `complaintId=${id}`
+        });
+        const text = await res.text();
+        if(text === 'success') {
+            alert("Complaint escalated successfully! You will receive an email notification.");
+            fetchComplaints();
+        }
+    }
+
+    async function updateStatus(id, newStatus) {
+        if(!confirm(`Update complaint #${id} status to "${newStatus}"?`)) return;
+        try {
+            const res = await fetch('../ComplaintServlet', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `action=updateStatus&complaintId=${id}&newStatus=${encodeURIComponent(newStatus)}`
+            });
+            const data = await res.json();
+            if(data.success) {
+                alert(`Status updated to "${newStatus}"! An email notification has been sent.`);
+                fetchComplaints();
+            } else {
+                alert('Failed to update status: ' + (data.message || 'Unknown error'));
+            }
+        } catch(e) {
+            console.error(e);
+            alert('Error updating status. Please try again.');
+        }
+    }
+
+    fetchComplaints();
+  </script>
+
+  <style>
+    #complaints-container { display: flex; flex-direction: column; gap: 20px; }
+    .complaint-card { background: var(--card-bg, white); padding: 25px; border-radius: 16px; box-shadow: var(--shadow-sm, 0 4px 12px rgba(0,0,0,0.05)); border: 1px solid var(--border-light, #eee); color: var(--text-main, #333); }
+    .complaint-card .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .complaint-card .id { color: #888; font-family: monospace; font-weight: 600; }
+    .status-badge { padding: 4px 12px; border-radius: 20px; font-weight: 600; font-size: 0.8rem; }
+    .status-pending { background: #fffcf0; color: #f39c12; }
+    .status-in-progress { background: #e7f3ff; color: #007bff; }
+    .status-resolved { background: #e6fffa; color: #38b2ac; }
+    .complaint-card .title { margin-bottom: 8px; color: var(--text-main, #333); }
+    .complaint-card .desc { color: var(--text-muted, #666); font-size: 0.95rem; margin-bottom: 15px; line-height: 1.5; }
+    .complaint-card .meta { display: flex; gap: 20px; align-items: center; border-top: 1px solid #eee; padding-top: 15px; }
+    .priority { font-weight: 600; font-size: 0.85rem; }
+    .level { background: #f8f9fa; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem; }
+    .date { color: #888; font-size: 0.85rem; margin-left: auto; }
+    .btn-escalate {
+        margin-top: 15px;
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        width: 100%;
+        transition: background 0.2s;
+    }
+    .btn-escalate:hover { background: #c82333; }
+    
+    /* Status update buttons */
+    .status-actions { display: flex; gap: 10px; align-items: center; margin-top: 15px; flex-wrap: wrap; }
+    .status-label { font-weight: 600; font-size: 0.85rem; color: #555; }
+    .btn-status {
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.82rem;
+        transition: all 0.2s;
+        color: white;
+    }
+    .btn-in-progress { background: #007bff; }
+    .btn-in-progress:hover { background: #0056b3; }
+    .btn-resolved { background: #38b2ac; }
+    .btn-resolved:hover { background: #2c9c97; }
+    .btn-closed { background: #6c757d; }
+    .btn-closed:hover { background: #545b62; }
+    .btn-reopen { background: #f39c12; }
+    .btn-reopen:hover { background: #e08e0b; }
+    .status-open { background: #e7f3ff; color: #007bff; }
+    .status-closed { background: #f0f0f0; color: #6c757d; }
+    .status-rejected { background: #ffeef0; color: #e74c3c; }
+  </style>
+  <script src="../js/portal.js"></script>
+  <script src="../js/theme.js"></script>
+</body>
+</html>

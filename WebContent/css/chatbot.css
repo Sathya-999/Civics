@@ -1,0 +1,129 @@
+/* Chat Window - Added for Gemini Bot */
+.chat-window {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 350px;
+    height: 500px;
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    display: none;
+    flex-direction: column;
+    z-index: 1000;
+    overflow: hidden;
+    border: 1px solid var(--border-light);
+    animation: slideUp 0.3s ease;
+    color: var(--text-main);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chat-header {
+    background: #007bff;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+}
+
+.chat-body {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background: var(--bg-main);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-footer {
+    padding: 15px;
+    background: var(--card-bg);
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    outline: none;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+#sendBtn {
+    background: #007bff;
+    color: white;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Messages */
+.message {
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.user-msg {
+    background: #007bff;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+}
+
+.bot-msg {
+    background: var(--card-bg);
+    color: var(--text-main);
+    align-self: flex-start;
+    border: 1px solid var(--border-light);
+    border-bottom-left-radius: 2px;
+}
+
+.typing-indicator {
+    display: none;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-left: 15px;
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+.action-btn {
+    background: #2ecc71;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    display: inline-block;
+    text-decoration: none;
+}

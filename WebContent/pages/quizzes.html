@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Civic Connect | Tests</title>
+  <link rel="stylesheet" href="../css/portal.css?v=1.1">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .quiz-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      margin-top: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .quiz-info h3 { margin-bottom: 5px; color: var(--text-main); }
+    .quiz-info p { font-size: 0.9rem; color: var(--text-muted); }
+    .btn-start { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand-section">
+      <div class="brand-name">
+        <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" rx="10" fill="var(--primary-blue)"/>
+          <path d="M20 6L8 14V28H14V20H18V28H26V20H22V28H32V14L20 6Z" fill="white"/>
+          <rect x="17" y="14" width="6" height="6" rx="1" fill="var(--primary-blue)"/>
+          <circle cx="20" cy="32" r="3" fill="#2ecc71"/>
+        </svg>
+        <span>CIVIC CONNECT</span>
+      </div>
+    </div>
+    <!-- Sidebar Search -->
+    <div style="padding: 0 16px 12px;">
+      <div style="position:relative;">
+        <input type="text" id="sidebarSearch" placeholder="Search pages..." oninput="filterSidebar(this.value)"
+          style="width:100%;padding:9px 12px 9px 34px;border-radius:10px;border:1px solid var(--border-light);background:var(--bg-main);color:var(--text-main);font-size:0.8rem;outline:none;transition:var(--transition);">
+        <i class="fas fa-search" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.75rem;"></i>
+      </div>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="dashboard.html" class="menu-item">
+        <i class="fas fa-th-large"></i> Dashboard
+      </a>
+      <a href="services.html" class="menu-item">
+        <i class="fas fa-hand-holding-heart"></i> Services
+      </a>
+      <a href="raise-complaint.html" class="menu-item">
+        <i class="fas fa-file-signature"></i> Raise Complaint
+      </a>
+      <a href="track-complaint.html" class="menu-item">
+        <i class="fas fa-map-marker-alt"></i> Track Complaint
+      </a>
+      <a href="history.html" class="menu-item">
+        <i class="fas fa-history"></i> My History
+      </a>
+      <div class="menu-divider"></div>
+      <a href="personal-info.html" class="menu-item">
+        <i class="fas fa-user-circle"></i> Profile
+      </a>
+      <a href="#" class="menu-item" id="theme-toggle">
+        <i class="fas fa-moon"></i> <span>Dark Mode</span>
+      </a>
+      <a href="#" onclick="logout()" class="menu-item" style="color: #e74c3c;">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header class="top-bar">
+      <div class="header-title">
+        <h2>Quizzes</h2>
+        <p>Your civic activities and neighborhood impact at a glance.</p>
+      </div>
+      
+      <div class="top-actions">
+        <div class="user-profile-pill">
+          <img src="https://ui-avatars.com/api/?name=Member&background=007bff&color=fff" alt="User" class="user-avatar-small">
+          <span class="user-name">Member</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="quiz-card">
+      <div class="quiz-info">
+        <h3>Constitution Basics</h3>
+        <p>15 Questions | 100 Reward Points</p>
+      </div>
+      <button class="btn-start">Start Test</button>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-info">
+        <h3>Public Etiquette & Waste Management</h3>
+        <p>10 Questions | 50 Reward Points</p>
+      </div>
+      <button class="btn-start">Start Test</button>
+    </div>
+  </main>
+  <script>
+    function filterSidebar(query) {
+      const items = document.querySelectorAll('.sidebar-menu .menu-item');
+      const q = query.toLowerCase().trim();
+      items.forEach(item => {
+        if (!q) { item.style.display = ''; return; }
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+  </script>
+  <script src="../js/portal.js"></script>
+  <script src="../js/theme.js"></script>
+</body>
+</html>

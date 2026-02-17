@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Civic Connect | Verify Identity</title>
+  <link rel="stylesheet" href="../css/portal.css?v=1.1">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .scanner-view {
+      background: #000;
+      border-radius: 20px;
+      height: 400px;
+      margin-top: 30px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    .scanner-frame {
+      width: 250px;
+      height: 250px;
+      border: 2px solid rgba(255,255,255,0.3);
+      position: relative;
+    }
+    .scanner-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #007bff;
+      box-shadow: 0 0 10px #007bff;
+      animation: scan 2s linear infinite;
+    }
+    @keyframes scan {
+      0% { top: 0; }
+      100% { top: 100%; }
+    }
+    .scanner-text {
+      color: white;
+      margin-top: 20px;
+      font-weight: 500;
+    }
+    .manual-entry {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-top: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div style="font-weight: 800; color: #007bff; font-size: 1.2rem; margin-bottom: 20px;">CIVIC CONNECT</div>
+      <div class="search-container">
+        <div class="notification-bell"><i class="far fa-bell"></i><span class="bell-badge">2</span></div>
+        <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Search"></div>
+      </div>
+    </div>
+    <div class="sidebar-menu">
+      <a class="menu-item active" href="verify.html"><i class="fas fa-qrcode"></i><span class="menu-item-text">Scan QR Code</span></a>
+      <a class="menu-item" href="dashboard.html"><i class="fas fa-home"></i><span class="menu-item-text">Dashboard</span></a>
+      <a class="menu-item" href="awareness.html"><i class="fas fa-book-open"></i><span class="menu-item-text">Civic Awareness</span></a>
+      <a class="menu-item" href="quizzes.html"><i class="fas fa-edit"></i><span class="menu-item-text">Civic Tests</span></a>
+      <a class="menu-item" href="tasks.html"><i class="fas fa-clipboard-list"></i><span class="menu-item-text">Community Tasks</span></a>
+      <a class="menu-item" href="faq.html"><i class="fas fa-question-circle"></i><span class="menu-item-text">FAQ & Laws</span></a>
+      <a class="menu-item" href="jobs.html"><i class="fas fa-briefcase"></i><span class="menu-item-text">Govt Jobs</span></a>
+      <a class="menu-item" href="saved.html"><i class="fas fa-bookmark"></i><span class="menu-item-text">Saved Items</span></a>
+      <div class="menu-divider"></div>
+      <a class="menu-item" href="raise-complaint.html"><i class="fas fa-exclamation-circle"></i><span class="menu-item-text">Report an issue</span></a>
+      <a class="menu-item" href="chatbot.html"><i class="fas fa-robot"></i><span class="menu-item-text">Ask CAI</span></a>
+      <a class="menu-item" href="personal-info.html"><i class="fas fa-user"></i><span class="menu-item-text">Profile</span></a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="content-header">
+      <h1>Document & Identity Verifier</h1>
+      <p>Scan government issued QR codes to verify authenticity.</p>
+    </header>
+
+    <div class="scanner-view">
+        <div class="scanner-frame">
+            <div class="scanner-line"></div>
+        </div>
+        <div class="scanner-text">Position the QR code inside the frame</div>
+    </div>
+
+    <div class="manual-entry">
+        <h3>Manual Verification</h3>
+        <p style="color:#666; font-size:0.9rem; margin-bottom:15px;">Verify using Document ID / Application Number</p>
+        <div style="display:flex; gap:10px;">
+            <input type="text" placeholder="Enter ID e.g. DOC-12345" style="flex:1; padding:12px; border:1px solid #ddd; border-radius:8px;">
+            <button style="background:#007bff; color:white; border:none; padding:12px 25px; border-radius:8px; font-weight:600; cursor:pointer;">Verify</button>
+        </div>
+    </div>
+  </main>
+</body>
+</html>

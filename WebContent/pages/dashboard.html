@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Civic Connect | Dashboard</title>
+  <link rel="stylesheet" href="../css/portal.css?v=1.1">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <style>
+    /* ── Quick Actions ── */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .qa-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+    .qa-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    .qa-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      color: white;
+    }
+    .qa-card .qa-label { font-weight: 600; font-size: 0.85rem; text-align: center; }
+    .qa-card .qa-sub { font-size: 0.72rem; color: var(--text-muted); text-align: center; }
+
+    /* ── Stats Row ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+    }
+    .stat-card.total::before { background: #007bff; }
+    .stat-card.open::before { background: #f39c12; }
+    .stat-card.progress::before { background: #3498db; }
+    .stat-card.resolved::before { background: #2ecc71; }
+    .stat-card.closed::before { background: #27ae60; }
+    .stat-card.rejected::before { background: #e74c3c; }
+    .stat-number {
+      font-size: 2rem; font-weight: 800;
+      color: var(--text-main);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; }
+    .stat-icon { font-size: 1.1rem; margin-bottom: 8px; }
+    .stat-card.total .stat-icon { color: #007bff; }
+    .stat-card.open .stat-icon { color: #f39c12; }
+    .stat-card.progress .stat-icon { color: #3498db; }
+    .stat-card.resolved .stat-icon { color: #2ecc71; }
+    .stat-card.closed .stat-icon { color: #27ae60; }
+    .stat-card.rejected .stat-icon { color: #e74c3c; }
+
+    /* ── Recent Complaints ── */
+    .recent-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .recent-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px;
+    }
+    .recent-header h3 { font-size: 1.05rem; font-weight: 700; color: var(--text-main); }
+    .recent-header a { font-size: 0.8rem; color: var(--primary-blue); text-decoration: none; font-weight: 600; }
+    .complaint-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-light);
+      transition: background 0.2s;
+    }
+    .complaint-row:last-child { border-bottom: none; }
+    .complaint-row:hover { background: var(--bg-main); border-radius: 10px; padding-left: 10px; margin-left: -10px; }
+    .c-icon {
+      width: 42px; height: 42px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .c-icon.open { background: #fff3cd; color: #856404; }
+    .c-icon.in-progress { background: #d1ecf1; color: #0c5460; }
+    .c-icon.resolved { background: #d4edda; color: #155724; }
+    .c-icon.closed { background: #c3e6cb; color: #155724; }
+    .c-icon.rejected { background: #f8d7da; color: #721c24; }
+    .c-details { flex: 1; min-width: 0; }
+    .c-title { font-weight: 600; font-size: 0.88rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .c-meta { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .c-status {
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 0.7rem; font-weight: 700;
+      white-space: nowrap;
+    }
+    .c-status.open { background: #fff3cd; color: #856404; }
+    .c-status.in-progress { background: #d1ecf1; color: #0c5460; }
+    .c-status.resolved { background: #d4edda; color: #155724; }
+    .c-status.closed { background: #c3e6cb; color: #155724; }
+    .c-status.rejected { background: #f8d7da; color: #721c24; }
+
+    .empty-state {
+      text-align: center; padding: 40px 20px; color: var(--text-muted);
+    }
+    .empty-state i { font-size: 3rem; margin-bottom: 12px; opacity: 0.3; }
+    .empty-state p { font-size: 0.9rem; }
+    .empty-state a { color: var(--primary-blue); font-weight: 600; text-decoration: none; }
+
+    /* ── City Stats Table ── */
+    .city-stats-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .city-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .city-table th {
+      text-align: left;
+      padding: 10px 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--border-light);
+    }
+    .city-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-main);
+    }
+    .city-table tr:last-child td { border-bottom: none; }
+    .resolve-bar {
+      height: 6px; border-radius: 3px;
+      background: var(--border-light);
+      overflow: hidden;
+      min-width: 80px;
+    }
+    .resolve-bar-fill {
+      height: 100%; border-radius: 3px;
+      background: #2ecc71;
+      transition: width 0.6s ease;
+    }
+
+    /* ── Workflow Diagram ── */
+    .workflow-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+    .workflow-steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+      padding: 20px 0;
+    }
+    .wf-step {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 8px; min-width: 100px;
+    }
+    .wf-circle {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; color: white;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+    .wf-label { font-size: 0.75rem; font-weight: 600; color: var(--text-main); text-align: center; }
+    .wf-arrow {
+      font-size: 1.2rem; color: var(--text-muted);
+      margin: 0 8px;
+      padding-bottom: 24px;
+    }
+
+    /* ── Banner ── */
+    .civic-banner {
+      border-radius: 20px;
+      padding: 40px 36px;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #0d47a1 0%, #1565c0 30%, #1976d2 60%, #42a5f5 100%);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .civic-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%; right: -20%;
+      width: 400px; height: 400px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+    .civic-banner::after {
+      content: '';
+      position: absolute;
+      bottom: -60%; left: -10%;
+      width: 300px; height: 300px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 50%;
+    }
+    .civic-banner h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 8px; position: relative; z-index: 1; }
+    .civic-banner p { opacity: 0.9; font-size: 0.92rem; line-height: 1.5; position: relative; z-index: 1; max-width: 600px; }
+    .civic-banner .cta-row { display: flex; gap: 12px; margin-top: 20px; position: relative; z-index: 1; flex-wrap: wrap; }
+    .civic-banner .cta-btn {
+      padding: 12px 24px;
+      border-radius: 12px; border: none;
+      font-weight: 700; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.3s;
+      display: inline-flex; align-items: center; gap: 8px;
+      text-decoration: none;
+    }
+    .cta-btn.primary { background: white; color: #0d47a1; }
+    .cta-btn.primary:hover { background: #e3f2fd; transform: translateY(-2px); }
+    .cta-btn.secondary { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); }
+    .cta-btn.secondary:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+
+    .location-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.15); backdrop-filter: blur(4px);
+      padding: 6px 14px; border-radius: 20px;
+      font-size: 0.78rem; font-weight: 600;
+      margin-bottom: 14px;
+      position: relative; z-index: 1;
+    }
+
+    @media (max-width: 768px) {
+      .quick-actions { grid-template-columns: repeat(2, 1fr); }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .workflow-steps { flex-direction: column; }
+      .wf-arrow { transform: rotate(90deg); margin: 4px 0; padding-bottom: 0; }
+      .civic-banner h1 { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand-section">
+      <div class="brand-name">
+        <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" rx="10" fill="var(--primary-blue)"/>
+          <path d="M20 6L8 14V28H14V20H18V28H26V20H22V28H32V14L20 6Z" fill="white"/>
+          <rect x="17" y="14" width="6" height="6" rx="1" fill="var(--primary-blue)"/>
+          <circle cx="20" cy="32" r="3" fill="#2ecc71"/>
+        </svg>
+        <span>CIVIC CONNECT</span>
+      </div>
+    </div>
+
+    <!-- Sidebar Search -->
+    <div style="padding: 0 16px 12px;">
+      <div style="position:relative;">
+        <input type="text" id="sidebarSearch" placeholder="Search pages..." oninput="filterSidebar(this.value)"
+          style="width:100%;padding:9px 12px 9px 34px;border-radius:10px;border:1px solid var(--border-light);background:var(--bg-main);color:var(--text-main);font-size:0.8rem;outline:none;transition:var(--transition);">
+        <i class="fas fa-search" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.75rem;"></i>
+      </div>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="dashboard.html" class="menu-item active">
+        <i class="fas fa-th-large"></i> Dashboard
+      </a>
+      <a href="services.html" class="menu-item">
+        <i class="fas fa-hand-holding-heart"></i> Services
+      </a>
+      <a href="raise-complaint.html" class="menu-item">
+        <i class="fas fa-file-signature"></i> Raise Complaint
+      </a>
+      <a href="track-complaint.html" class="menu-item">
+        <i class="fas fa-map-marker-alt"></i> Track Complaint
+      </a>
+      <a href="history.html" class="menu-item">
+        <i class="fas fa-history"></i> My History
+      </a>
+      <a href="tasks.html" class="menu-item">
+        <i class="fas fa-clipboard-list"></i> Community Tasks
+      </a>
+      <a href="faq.html" class="menu-item">
+        <i class="fas fa-question-circle"></i> FAQ & Laws
+      </a>
+      <a href="jobs.html" class="menu-item">
+        <i class="fas fa-briefcase"></i> Govt Jobs
+      </a>
+      <a href="saved.html" class="menu-item">
+        <i class="fas fa-bookmark"></i> Saved Items
+      </a>
+      <a href="chatbot.html" class="menu-item">
+        <i class="fas fa-robot"></i> Ask CAI
+      </a>
+      <div class="menu-divider"></div>
+      <a href="personal-info.html" class="menu-item">
+        <i class="fas fa-user-circle"></i> Profile
+      </a>
+      <a href="#" class="menu-item" id="theme-toggle">
+        <i class="fas fa-moon"></i> <span>Dark Mode</span>
+      </a>
+      <a href="#" onclick="logout()" class="menu-item" style="color: #e74c3c;">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <header class="top-bar">
+      <div class="header-title">
+        <h2 id="welcomeUser">Welcome, Citizen!</h2>
+        <p>Your civic activities and complaint status at a glance.</p>
+      </div>
+      <div class="top-actions">
+        <button onclick="showHowToUse()" title="How to Use App" style="background: var(--card-bg); border: 1px solid var(--border-light); width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #007bff; font-size: 1.1rem; transition: var(--transition); box-shadow: var(--shadow-sm);">
+          <i class="fas fa-circle-question"></i>
+        </button>
+        <button class="theme-toggle-btn" id="theme-toggle-top" title="Toggle Theme" style="background: var(--card-bg); border: 1px solid var(--border-light); width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-main); font-size: 1.1rem; transition: var(--transition); box-shadow: var(--shadow-sm); margin-left: 10px;">
+          <i class="fas fa-moon"></i>
+        </button>
+        <button onclick="location.href='chatbot.html'" title="Ask AI" style="background: var(--card-bg); border: 1px solid var(--border-light); width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-main); font-size: 1.1rem; transition: var(--transition); box-shadow: var(--shadow-sm); margin-left: 10px;">
+          <i class="fas fa-robot"></i>
+        </button>
+        <div class="user-profile-pill">
+          <img src="https://ui-avatars.com/api/?name=Citizen&background=007bff&color=fff" alt="User" class="user-avatar-small">
+          <span class="user-name">Citizen</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ── HERO BANNER ── -->
+    <div class="civic-banner">
+      <div class="location-tag" id="locationTag" style="display:none;">
+        <i class="fas fa-map-marker-alt"></i>
+        <span id="locationText">Detecting...</span>
+      </div>
+      <h1>Connecting Citizens &amp; Municipality</h1>
+      <p>Report civic issues directly to your local municipality. Track progress in real-time. Together, let's build a cleaner, better community.</p>
+      <div class="cta-row">
+        <a href="raise-complaint.html" class="cta-btn primary"><i class="fas fa-plus-circle"></i> Raise Complaint</a>
+        <a href="track-complaint.html" class="cta-btn secondary"><i class="fas fa-search-location"></i> Track My Complaints</a>
+      </div>
+    </div>
+
+    <!-- ── HOW IT WORKS ── -->
+    <div class="workflow-section">
+      <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">
+        <i class="fas fa-route" style="color: var(--primary-blue); margin-right: 8px;"></i>How It Works
+      </h3>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Your complaint journey from submission to resolution</p>
+      <div class="workflow-steps">
+        <div class="wf-step">
+          <div class="wf-circle" style="background: linear-gradient(135deg, #f39c12, #e67e22);"><i class="fas fa-file-signature"></i></div>
+          <div class="wf-label">Citizen<br>Reports Issue</div>
+        </div>
+        <div class="wf-arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="wf-step">
+          <div class="wf-circle" style="background: linear-gradient(135deg, #3498db, #2980b9);"><i class="fas fa-building"></i></div>
+          <div class="wf-label">Municipality<br>Receives</div>
+        </div>
+        <div class="wf-arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="wf-step">
+          <div class="wf-circle" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);"><i class="fas fa-user-tie"></i></div>
+          <div class="wf-label">Officer<br>Assigned</div>
+        </div>
+        <div class="wf-arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="wf-step">
+          <div class="wf-circle" style="background: linear-gradient(135deg, #1abc9c, #16a085);"><i class="fas fa-tools"></i></div>
+          <div class="wf-label">Work In<br>Progress</div>
+        </div>
+        <div class="wf-arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="wf-step">
+          <div class="wf-circle" style="background: linear-gradient(135deg, #2ecc71, #27ae60);"><i class="fas fa-check-circle"></i></div>
+          <div class="wf-label">Issue<br>Resolved</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── QUICK ACTIONS ── -->
+    <div class="quick-actions">
+      <a href="raise-complaint.html" class="qa-card">
+        <div class="qa-icon" style="background: linear-gradient(135deg, #e74c3c, #c0392b);"><i class="fas fa-bullhorn"></i></div>
+        <div class="qa-label">Raise Complaint</div>
+        <div class="qa-sub">Report a civic issue</div>
+      </a>
+      <a href="track-complaint.html" class="qa-card">
+        <div class="qa-icon" style="background: linear-gradient(135deg, #3498db, #2980b9);"><i class="fas fa-search-location"></i></div>
+        <div class="qa-label">Track Complaint</div>
+        <div class="qa-sub">Check complaint status</div>
+      </a>
+      <a href="services.html" class="qa-card">
+        <div class="qa-icon" style="background: linear-gradient(135deg, #2ecc71, #27ae60);"><i class="fas fa-file-alt"></i></div>
+        <div class="qa-label">Apply Services</div>
+        <div class="qa-sub">Certificates & more</div>
+      </a>
+      <a href="history.html" class="qa-card">
+        <div class="qa-icon" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);"><i class="fas fa-history"></i></div>
+        <div class="qa-label">My History</div>
+        <div class="qa-sub">Past complaints & actions</div>
+      </a>
+      <a href="chatbot.html" class="qa-card">
+        <div class="qa-icon" style="background: linear-gradient(135deg, #f39c12, #e67e22);"><i class="fas fa-robot"></i></div>
+        <div class="qa-label">Ask AI Assistant</div>
+        <div class="qa-sub">Get civic guidance</div>
+      </a>
+    </div>
+
+    <!-- ── COMPLAINT STATS ── -->
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card total">
+        <div class="stat-icon"><i class="fas fa-clipboard-list"></i></div>
+        <div class="stat-number" id="statTotal">0</div>
+        <div class="stat-label">Total Raised</div>
+      </div>
+      <div class="stat-card open">
+        <div class="stat-icon"><i class="fas fa-envelope-open"></i></div>
+        <div class="stat-number" id="statOpen">0</div>
+        <div class="stat-label">Open</div>
+      </div>
+      <div class="stat-card progress">
+        <div class="stat-icon"><i class="fas fa-spinner"></i></div>
+        <div class="stat-number" id="statInProgress">0</div>
+        <div class="stat-label">In Progress</div>
+      </div>
+      <div class="stat-card resolved">
+        <div class="stat-icon"><i class="fas fa-check-double"></i></div>
+        <div class="stat-number" id="statResolved">0</div>
+        <div class="stat-label">Resolved</div>
+      </div>
+      <div class="stat-card closed">
+        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-number" id="statClosed">0</div>
+        <div class="stat-label">Closed</div>
+      </div>
+      <div class="stat-card rejected">
+        <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+        <div class="stat-number" id="statRejected">0</div>
+        <div class="stat-label">Rejected</div>
+      </div>
+    </div>
+
+    <!-- ── MAIN GRID ── -->
+    <div class="dashboard-grid">
+      <!-- LEFT COLUMN -->
+      <div class="left-section">
+        <div class="cards-row">
+          <div class="dashboard-card">
+            <div class="lb-header" style="display:flex; justify-content:space-between; margin-bottom: 0px;">
+              <span class="lb-title">Complaint Progress</span>
+              <i class="fas fa-ellipsis-h text-muted"></i>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; padding: 20px;">
+              <svg width="140" height="140" viewBox="0 0 160 160" style="transform: rotate(-90deg);">
+                <circle cx="80" cy="80" r="70" fill="none" stroke="var(--border-light)" stroke-width="10" />
+                <circle cx="80" cy="80" r="70" fill="none" stroke="#007bff" stroke-width="10" stroke-dasharray="440"
+                  stroke-dashoffset="440" stroke-linecap="round" id="ringRaised" />
+                <circle cx="80" cy="80" r="50" fill="none" stroke="var(--border-light)" stroke-width="10" />
+                <circle cx="80" cy="80" r="50" fill="none" stroke="#2ecc71" stroke-width="10" stroke-dasharray="314"
+                  stroke-dashoffset="314" stroke-linecap="round" id="ringResolved" />
+                <circle cx="80" cy="80" r="30" fill="none" stroke="var(--border-light)" stroke-width="10" />
+                <circle cx="80" cy="80" r="30" fill="none" stroke="#a5d8ff" stroke-width="10" stroke-dasharray="188"
+                  stroke-dashoffset="188" stroke-linecap="round" id="ringClosed" />
+              </svg>
+            </div>
+            <div style="display:flex; justify-content:center; gap:10px; font-size:12px; color:var(--text-muted);">
+              <span style="display:flex; align-items:center; gap:4px;"><span style="width:6px; height:6px; background:#007bff; border-radius:50%;"></span> Raised</span>
+              <span style="display:flex; align-items:center; gap:4px;"><span style="width:6px; height:6px; background:#2ecc71; border-radius:50%;"></span> Resolved</span>
+              <span style="display:flex; align-items:center; gap:4px;"><span style="width:6px; height:6px; background:#a5d8ff; border-radius:50%;"></span> Closed</span>
+            </div>
+          </div>
+          <div class="dashboard-card">
+            <span class="lb-title" style="margin-bottom: 10px;">Civic Score</span>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+              <svg width="180" height="100" viewBox="0 0 180 100">
+                <path d="M 10 90 A 80 80 0 0 1 170 90" class="gauge-path" />
+                <path d="M 10 90 A 80 80 0 0 1 170 90" class="gauge-fill" id="gaugeFill" />
+              </svg>
+              <div style="font-size: 2rem; font-weight: 800; margin-top: -30px; color: var(--text-main);" id="scoreText">0</div>
+              <div style="display:flex; flex-direction:column; gap:2px; font-size:10px; color:var(--text-muted); margin-top:10px;">
+                <span><span style="color:#e74c3c;">&#9679;</span> 0-350 Low</span>
+                <span><span style="color:#f1c40f;">&#9679;</span> 350-700 Medium</span>
+                <span><span style="color:#2ecc71;">&#9679;</span> 700+ High</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BADGE -->
+        <div class="dashboard-card" style="padding: 15px; flex-direction: row; align-items: center; justify-content: flex-start; gap: 15px; margin-top: 24px;">
+          <div style="width: 40px; height: 40px; background: var(--primary-blue-light); color: var(--primary-blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <div>
+            <div style="font-weight: 600; color: var(--text-main);" id="badgeTitle">Active Citizen</div>
+            <div style="font-size: 12px; color: var(--text-muted);" id="badgeDesc">Start raising complaints to level up!</div>
+          </div>
+          <div style="margin-left: auto; color: gold; display: flex; gap: 2px;" id="badgeStars">
+            <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: Leaderboard -->
+      <div class="right-section">
+        <div class="dashboard-card" style="height: 100%;">
+          <div class="lb-header" style="display: flex; justify-content: space-between;">
+            <div>
+              <div class="lb-title">Leaderboard</div>
+              <div class="lb-subtitle" style="font-size: 12px; color: #888;">Top Contributing Citizens</div>
+            </div>
+            <i class="fas fa-medal" style="color: gold; font-size: 1.1rem;"></i>
+          </div>
+          <div class="podium">
+            <div class="podium-place place-2">
+              <div class="avatar-circle">
+                <div style="font-size:8px;">2</div>
+                <div style="position:absolute;bottom:-5px;background:var(--card-bg);color:var(--text-main);width:18px;height:18px;border-radius:50%;font-size:10px;line-height:18px;border:1px solid var(--border-light);">2</div>
+              </div>
+              <div style="font-weight:600; font-size:12px; color:var(--text-main);" id="pod2">—</div>
+              <div style="font-size:10px; color:var(--text-muted);" id="pod2Score">0 pts</div>
+            </div>
+            <div class="podium-place place-1">
+              <div class="avatar-circle"><i class="fas fa-crown crown-icon"></i>
+                <div style="font-size:8px;">1</div>
+                <div style="position:absolute;bottom:-5px;background:gold;color:black;width:18px;height:18px;border-radius:50%;font-size:10px;line-height:18px;border:1px solid gold;">1</div>
+              </div>
+              <div style="font-weight:600; font-size:12px; color:var(--text-main);" id="pod1">—</div>
+              <div style="font-size:10px; color:var(--text-muted);" id="pod1Score">0 pts</div>
+            </div>
+            <div class="podium-place place-3">
+              <div class="avatar-circle">
+                <div style="font-size:8px;">3</div>
+                <div style="position:absolute;bottom:-5px;background:var(--card-bg);color:var(--text-main);width:18px;height:18px;border-radius:50%;font-size:10px;line-height:18px;border:1px solid var(--border-light);">3</div>
+              </div>
+              <div style="font-weight:600; font-size:12px; color:var(--text-main);" id="pod3">—</div>
+              <div style="font-size:10px; color:var(--text-muted);" id="pod3Score">0 pts</div>
+            </div>
+          </div>
+          <div id="lbExtra" style="display: flex; flex-direction: column; gap: 10px; color: var(--text-main);">
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; padding:8px 0; border-bottom:1px solid var(--border-light);">
+              <span><b>4</b> <span id="lb4">—</span></span> <b id="lb4Score">0</b>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; padding:8px 0;">
+              <span><b>5</b> <span id="lb5">—</span></span> <b id="lb5Score">0</b>
+            </div>
+          </div>
+          <div style="margin-top: auto; padding: 10px; background: var(--primary-blue-light); color: var(--text-main); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
+            <span><i class="fas fa-user"></i> You</span> <b id="yourPoints">0 pts</b>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RECENT COMPLAINTS ── -->
+    <div class="recent-section" id="recentSection">
+      <div class="recent-header">
+        <h3><i class="fas fa-clock" style="color: var(--primary-blue); margin-right: 8px;"></i>Recent Complaints</h3>
+        <a href="history.html">View All <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div id="recentList">
+        <div class="empty-state">
+          <i class="fas fa-inbox"></i>
+          <p>No complaints yet. <a href="raise-complaint.html">Raise your first complaint</a> to get started.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CITY STATS ── -->
+    <div class="city-stats-section" id="cityStatsSection" style="display:none;">
+      <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">
+        <i class="fas fa-chart-bar" style="color: var(--primary-blue); margin-right: 8px;"></i>City-wise Complaint Summary
+      </h3>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">How municipalities across cities are handling complaints</p>
+      <table class="city-table">
+        <thead>
+          <tr>
+            <th>City</th>
+            <th>Total</th>
+            <th>Resolved</th>
+            <th>Resolution Rate</th>
+          </tr>
+        </thead>
+        <tbody id="cityStatsBody"></tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════
+    // CIVIC CONNECT DASHBOARD — CITIZEN ↔ MUNICIPALITY HUB
+    // No external images. Pure data-driven complaint dashboard.
+    // ═══════════════════════════════════════════════════════════
+
+    // ── SIDEBAR SEARCH ──
+    function filterSidebar(query) {
+      const items = document.querySelectorAll('.sidebar-menu .menu-item');
+      const q = query.toLowerCase().trim();
+      items.forEach(item => {
+        if (!q) { item.style.display = ''; return; }
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    // ── LOCATION (lightweight — just for the tag, no images) ──
+    (function detectLocation() {
+      if (!navigator.geolocation) return;
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&zoom=14&addressdetails=1`,
+            { headers: { 'Accept-Language': 'en' } }
+          );
+          const data = await res.json();
+          const addr = data.address || {};
+          const place = addr.city || addr.town || addr.village || addr.suburb || addr.state_district || '';
+          const state = addr.state || '';
+          if (place) {
+            document.getElementById('locationTag').style.display = 'inline-flex';
+            document.getElementById('locationText').textContent = state ? `${place}, ${state}` : place;
+          }
+        } catch(e) {}
+      }, () => {}, { enableHighAccuracy: false, timeout: 8000, maximumAge: 300000 });
+    })();
+
+    // ── FORMAT DATE ──
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      const now = new Date();
+      const diffMs = now - d;
+      const diffMins = Math.floor(diffMs / 60000);
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins}m ago`;
+      const diffHrs = Math.floor(diffMins / 60);
+      if (diffHrs < 24) return `${diffHrs}h ago`;
+      const diffDays = Math.floor(diffHrs / 24);
+      if (diffDays < 7) return `${diffDays}d ago`;
+      return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    // ── STATUS HELPERS ──
+    function statusClass(s) {
+      if (!s) return 'open';
+      const l = s.toLowerCase().replace(/\s+/g, '-');
+      if (l === 'in-progress') return 'in-progress';
+      if (l === 'resolved') return 'resolved';
+      if (l === 'closed') return 'closed';
+      if (l === 'rejected') return 'rejected';
+      return 'open';
+    }
+    function statusIcon(s) {
+      const cls = statusClass(s);
+      if (cls === 'in-progress') return 'fa-spinner fa-pulse';
+      if (cls === 'resolved') return 'fa-check-double';
+      if (cls === 'closed') return 'fa-check-circle';
+      if (cls === 'rejected') return 'fa-times-circle';
+      return 'fa-envelope-open';
+    }
+    function escalationLabel(level) {
+      if (level >= 2) return '<span style="color:#e74c3c;font-weight:700;">State Level</span>';
+      if (level === 1) return '<span style="color:#f39c12;font-weight:600;">Municipal</span>';
+      return '<span style="color:#3498db;">Local</span>';
+    }
+
+    // ── BUILD RECENT LIST ──
+    function buildRecentList(complaints) {
+      const container = document.getElementById('recentList');
+      if (!complaints || complaints.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <p>No complaints yet. <a href="raise-complaint.html">Raise your first complaint</a> to get started.</p>
+          </div>`;
+        return;
+      }
+      container.innerHTML = complaints.map(c => `
+        <div class="complaint-row" onclick="location.href='track-complaint.html'" style="cursor:pointer;">
+          <div class="c-icon ${statusClass(c.status)}"><i class="fas ${statusIcon(c.status)}"></i></div>
+          <div class="c-details">
+            <div class="c-title">#${c.id} — ${c.title}</div>
+            <div class="c-meta">
+              <span><i class="fas fa-map-pin"></i> ${c.location || 'N/A'}</span>
+              <span><i class="fas fa-layer-group"></i> ${escalationLabel(c.escalation)}</span>
+              <span><i class="fas fa-clock"></i> ${formatDate(c.createdAt)}</span>
+              ${c.verified ? '<span style="color:#2ecc71;"><i class="fas fa-shield-alt"></i> Verified</span>' : ''}
+            </div>
+          </div>
+          <span class="c-status ${statusClass(c.status)}">${c.status}</span>
+        </div>
+      `).join('');
+    }
+
+    // ── BUILD CITY STATS TABLE ──
+    function buildCityStats(stats) {
+      if (!stats || stats.length === 0) return;
+      document.getElementById('cityStatsSection').style.display = 'block';
+      const tbody = document.getElementById('cityStatsBody');
+      tbody.innerHTML = stats.map(s => {
+        const rate = s.total > 0 ? Math.round((s.closed / s.total) * 100) : 0;
+        return `
+          <tr>
+            <td><i class="fas fa-city" style="color:var(--primary-blue);margin-right:8px;"></i>${s.cityName}</td>
+            <td>${s.total}</td>
+            <td>${s.closed}</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="resolve-bar"><div class="resolve-bar-fill" style="width:${rate}%"></div></div>
+                <span style="font-weight:600;font-size:0.8rem;">${rate}%</span>
+              </div>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    // ── BUILD LEADERBOARD (Real Users) ──
+    function buildLeaderboard(leaderboard, myScore) {
+      if (!leaderboard || leaderboard.length === 0) return;
+      const podEls = [
+        { name: 'pod1', score: 'pod1Score' },
+        { name: 'pod2', score: 'pod2Score' },
+        { name: 'pod3', score: 'pod3Score' },
+      ];
+      const extraEls = [
+        { name: 'lb4', score: 'lb4Score' },
+        { name: 'lb5', score: 'lb5Score' },
+      ];
+      for (let i = 0; i < 3 && i < leaderboard.length; i++) {
+        document.getElementById(podEls[i].name).textContent = leaderboard[i].name;
+        document.getElementById(podEls[i].score).textContent = leaderboard[i].score + ' pts';
+      }
+      for (let i = 0; i < 2 && i + 3 < leaderboard.length; i++) {
+        document.getElementById(extraEls[i].name).textContent = leaderboard[i+3].name;
+        document.getElementById(extraEls[i].score).textContent = leaderboard[i+3].score + ' pts';
+      }
+      document.getElementById('yourPoints').textContent = (myScore || 0) + ' pts';
+    }
+
+    // ── UPDATE BADGE ──
+    function updateBadge(score) {
+      const titleEl = document.getElementById('badgeTitle');
+      const descEl = document.getElementById('badgeDesc');
+      const starsEl = document.getElementById('badgeStars');
+      let stars = 0, title = 'New Citizen', desc = 'Raise complaints to earn your civic badge!';
+      if (score >= 700) { stars = 4; title = 'Civic Champion'; desc = 'Outstanding contribution to your community!'; }
+      else if (score >= 350) { stars = 3; title = 'Active Contributor'; desc = 'Great work! Keep raising and tracking issues.'; }
+      else if (score >= 100) { stars = 2; title = 'Rising Citizen'; desc = 'Good start! Continue reporting civic issues.'; }
+      else if (score > 0) { stars = 1; title = 'Active Citizen'; desc = 'You\'ve taken the first step. Keep going!'; }
+      titleEl.textContent = title;
+      descEl.textContent = desc;
+      starsEl.innerHTML = '';
+      for (let i = 0; i < 4; i++) {
+        starsEl.innerHTML += `<i class="${i < stars ? 'fas' : 'far'} fa-star"></i>`;
+      }
+    }
+
+    // ── ANIMATE COUNTER ──
+    function animateCount(el, target) {
+      const duration = 600;
+      const start = parseInt(el.textContent) || 0;
+      if (start === target) return;
+      const startTime = performance.now();
+      function tick(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        el.textContent = Math.round(start + (target - start) * progress);
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    // ── HOW TO USE ──
+    function showHowToUse() {
+      alert('How to Use Civic Connect:\n\n1. Click "Raise Complaint" to report a civic issue\n2. Capture live photo evidence with GPS tag\n3. Your complaint is sent to the municipality department\n4. Track status in "Track Complaint"\n5. Get email updates on every status change\n6. Earn civic score points for active participation');
+    }
+
+    // ── FETCH DASHBOARD DATA ──
+    async function fetchDashboardData() {
+      try {
+        const response = await fetch('../DashboardServlet');
+        if (response.status === 401) {
+          window.location.href = 'login.html';
+          return;
+        }
+        if (!response.ok) return;
+
+        const data = await response.json();
+
+        // ── User name ──
+        let finalName = data.userName;
+        const isGeneric = !finalName || finalName === 'Member' || finalName === 'Citizen' || finalName === 'User';
+        if (isGeneric) {
+          const localProfile = JSON.parse(localStorage.getItem('civicUserProfile') || '{}');
+          finalName = localProfile.fullName || 'Citizen';
+        }
+        const profile = JSON.parse(localStorage.getItem('civicUserProfile') || '{}');
+        profile.fullName = finalName;
+        localStorage.setItem('civicUserProfile', JSON.stringify(profile));
+
+        document.getElementById('welcomeUser').textContent = `Welcome, ${finalName}!`;
+        const profileName = document.querySelector('.user-name');
+        if (profileName) profileName.textContent = finalName;
+        const avatarImg = document.querySelector('.user-avatar-small');
+        if (avatarImg) avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(finalName)}&background=007bff&color=fff`;
+
+        // ── Stats counters (animated) ──
+        animateCount(document.getElementById('statTotal'), data.totalComplaints || 0);
+        animateCount(document.getElementById('statOpen'), data.openComplaints || 0);
+        animateCount(document.getElementById('statInProgress'), data.inProgressComplaints || 0);
+        animateCount(document.getElementById('statResolved'), data.resolvedComplaints || 0);
+        animateCount(document.getElementById('statClosed'), data.closedComplaints || 0);
+        animateCount(document.getElementById('statRejected'), data.rejectedComplaints || 0);
+
+        // ── Progress rings ──
+        const maxRing = Math.max(data.totalComplaints, 1);
+        const ringRaised = document.getElementById('ringRaised');
+        const ringResolved = document.getElementById('ringResolved');
+        const ringClosed = document.getElementById('ringClosed');
+        if (ringRaised) ringRaised.style.strokeDashoffset = 440 - (Math.min(data.totalComplaints, maxRing) / maxRing) * 440;
+        if (ringResolved) ringResolved.style.strokeDashoffset = 314 - (Math.min(data.resolvedComplaints || 0, maxRing) / maxRing) * 314;
+        if (ringClosed) ringClosed.style.strokeDashoffset = 188 - (Math.min(data.closedComplaints, maxRing) / maxRing) * 188;
+
+        // ── Civic Score Gauge ──
+        document.getElementById('scoreText').textContent = data.civicScore || 0;
+        const gauge = document.getElementById('gaugeFill');
+        if (gauge) {
+          const totalLen = 251;
+          const offset = totalLen - (Math.min(data.civicScore || 0, 1000) / 1000) * totalLen;
+          gauge.style.strokeDasharray = `${totalLen}`;
+          gauge.style.strokeDashoffset = offset;
+          if (data.civicScore >= 700) gauge.style.stroke = '#2ecc71';
+          else if (data.civicScore >= 350) gauge.style.stroke = '#f1c40f';
+          else gauge.style.stroke = '#e74c3c';
+        }
+
+        // ── Recent complaints ──
+        buildRecentList(data.recentComplaints || []);
+
+        // ── City stats ──
+        buildCityStats(data.cityStats || []);
+
+        // ── Leaderboard (real users) ──
+        buildLeaderboard(data.leaderboard || [], data.civicScore || 0);
+
+        // ── Badge ──
+        updateBadge(data.civicScore || 0);
+
+        // ── Your points ──
+        document.getElementById('yourPoints').textContent = `${data.civicScore || 0} pts`;
+
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      }
+    }
+
+    // ── INIT ──
+    window.addEventListener('load', () => {
+      fetchDashboardData();
+    });
+  </script>
+  <script src="../js/portal.js"></script>
+  <script src="../js/theme.js"></script>
+</body>
+
+</html>

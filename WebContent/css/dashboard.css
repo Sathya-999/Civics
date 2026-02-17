@@ -1,0 +1,555 @@
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8fbff;
+}
+
+/* Modern Expandable Sidebar */
+.slim-sidebar {
+  width: 80px;
+  background: white;
+  border-right: 1px solid #e0e8f0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  flex-shrink: 0;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.slim-sidebar.expanded {
+  width: 260px;
+}
+
+.sidebar-header {
+  padding: 0 20px 30px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+}
+
+.sidebar-logo {
+  width: 40px;
+  min-width: 40px;
+}
+
+.brand-name {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: #163a60;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.slim-sidebar.expanded .brand-name {
+  opacity: 1;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-grow: 1;
+  padding: 0 15px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  border-radius: 12px;
+  color: #60758c;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.nav-item i {
+  width: 24px;
+  min-width: 24px;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.nav-item span {
+  font-size: 0.95rem;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.slim-sidebar.expanded .nav-item span {
+  opacity: 1;
+}
+
+.nav-item:hover, .nav-item.active {
+  background: #eef4fb;
+  color: #163a60;
+}
+
+.nav-item.active {
+  background: rgba(22, 58, 96, 0.08);
+  font-weight: 600;
+}
+
+.sidebar-bottom {
+  border-top: 1px solid #f0f0f0;
+  padding: 20px 15px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Light/Dark Mode Switch */
+.mode-switch {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  margin-top: 10px;
+}
+
+.toggle-bg {
+  width: 40px;
+  height: 20px;
+  background: #ddd;
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+}
+
+.toggle-circle {
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: left 0.3s;
+}
+
+/* Content Area */
+.main-dashboard {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Banner Carousel */
+.carousel-banner {
+  width: 100%;
+  height: 250px; /* Perfect balance for portal feel */
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Align content to bottom left */
+  padding: 30px;
+  color: white;
+  margin-bottom: 25px;
+  transition: background-image 0.8s ease-in-out;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.carousel-banner::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, rgba(22, 58, 96, 0.7) 0%, rgba(22, 58, 96, 0.1) 100%);
+  z-index: 1;
+}
+
+.carousel-banner h1, .carousel-banner p {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+}
+
+.carousel-banner h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 5px;
+  position: relative;
+}
+
+/* Civic Connect Portal Ghost Text Style */
+.carousel-banner::after {
+  content: "CONNECT";
+  position: absolute;
+  top: 10%;
+  left: 5%;
+  font-size: 8rem;
+  font-weight: 900;
+  color: rgba(255,255,255,0.1);
+  z-index: 1;
+  pointer-events: none;
+  font-family: Arial, sans-serif;
+  letter-spacing: -5px;
+}
+
+.carousel-banner p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 45px;
+  height: 45px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(8px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: white;
+  transition: all 0.3s;
+  z-index: 10;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.carousel-arrow:hover {
+  background: rgba(255,255,255,0.4);
+}
+
+.carousel-arrow.left { left: 20px; }
+.carousel-arrow.right { right: 20px; }
+
+.carousel-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 5;
+}
+
+.dot {
+  width: 30px;
+  height: 5px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 3px;
+  transition: all 0.3s;
+}
+
+/* Animations */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card:nth-child(1) { transition-delay: 0.1s; }
+.card:nth-child(2) { transition-delay: 0.2s; }
+.card:nth-child(3) { transition-delay: 0.3s; }
+
+/* Particle/Sparkle effect for banner */
+.sparkle {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  animation: fly 3s infinite linear;
+}
+
+@keyframes fly {
+  0% { transform: translate(0, 0); opacity: 0; }
+  50% { opacity: 0.5; }
+  100% { transform: translate(100px, -100px); opacity: 0; }
+}
+
+/* Hover Lift */
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 1200px) {
+  .carousel-banner { height: 220px; }
+  .carousel-banner h1 { font-size: 2.2rem; }
+  .carousel-banner::after { font-size: 6rem; }
+}
+
+@media (max-width: 768px) {
+  .carousel-banner { 
+    height: 180px; 
+    padding: 20px;
+    justify-content: center;
+    text-align: center;
+  }
+  .carousel-banner h1 { font-size: 1.8rem; }
+  .carousel-banner::after { display: none; }
+  .dashboard-grid { grid-template-columns: 1fr; }
+}
+
+.carousel-banner h1 {
+  font-size: 3rem;
+  margin: 0;
+  font-weight: 800;
+}
+
+.carousel-banner p {
+  font-size: 1.5rem;
+  margin: 10px 0;
+}
+
+.carousel-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 30px;
+  height: 4px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 2px;
+}
+
+.dot.active {
+  background: white;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr;
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Progress Card - Concentric Circles */
+.progress-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.concentric-circles {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.circle-svg {
+  position: absolute;
+  transform: rotate(-90deg);
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #f0f0f0;
+  stroke-width: 8;
+}
+
+.circle-progress {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease;
+}
+
+.progress-label {
+  position: absolute;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+}
+
+.legend {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+.dot-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* Score Card */
+.score-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.gauge-container {
+  width: 200px;
+  height: 100px;
+  overflow: hidden;
+  position: relative;
+}
+
+.gauge {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 20px solid #f0f0f0;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  transform: rotate(-45deg);
+}
+
+.gauge-progress {
+  position: absolute;
+  top: 0;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 20px solid #ff6b2c;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  transform: rotate(-45deg); /* Default 0 */
+}
+
+.score-value {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+.cutoff-table {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.cutoff-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  font-size: 0.85rem;
+}
+
+.cutoff-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+/* Leaderboard */
+.leaderboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Leaderboard Rank Styling */
+.rank-1 { width: 80px !important; height: 80px !important; border: 4px solid gold; box-shadow: 0 0 15px rgba(255,183,0,0.4); }
+.rank-2 { width: 60px !important; height: 60px !important; border: 3px solid #ced4da; }
+.rank-3 { width: 60px !important; height: 60px !important; border: 3px solid #cd7f32; }
+
+/* Contribution Streak Heatmap */
+.heatmap-container {
+  display: grid;
+  grid-template-columns: repeat(53, 1fr);
+  gap: 3px;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.heatmap-cell {
+  width: 12px;
+  height: 12px;
+  background: #ebedf0;
+  border-radius: 2px;
+}
+
+.level-1 { background: #9be9a8; }
+.level-2 { background: #40c463; }
+.level-3 { background: #30a14e; }
+.level-4 { background: #216e39; }
+
+.streak-card {
+  background: #163a60;
+  color: white;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.streak-badge {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 10px 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.streak-badge span { font-size: 1.5rem; font-weight: 800; display: block; }

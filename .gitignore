@@ -1,0 +1,33 @@
+# .gitignore for Civic Connect Project
+
+# ---- Compiled / Build ----
+*.class
+build/
+bin/
+out/
+target/
+
+# Webapp deployed classes (prevent stale deployment conflicts)
+WebContent/WEB-INF/classes/
+
+# ---- IDE / Editor ----
+.vscode/
+.settings/
+.project
+.classpath
+.factorypath
+*.iml
+.idea/
+*.swp
+*~
+
+# ---- Logs & Crash Dumps ----
+*.log
+hs_err_pid*.log
+replay_pid*.log
+
+# ---- OS / Misc ----
+Thumbs.db
+.DS_Store
+*.tmp
+*.bak

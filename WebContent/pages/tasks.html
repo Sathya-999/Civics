@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Civic Connect | Community Tasks</title>
+  <link rel="stylesheet" href="../css/portal.css?v=1.1">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .task-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      margin-top: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-left: 5px solid #007bff;
+    }
+    .task-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .task-badge { background: #e7f3ff; color: #007bff; padding: 4px 12px; border-radius: 20px; font-weight: 600; font-size: 0.8rem; }
+    .btn-apply { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 15px; }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div style="font-weight: 800; color: #007bff; font-size: 1.2rem; margin-bottom: 20px;">CIVIC CONNECT</div>
+      <div class="search-container">
+        <div class="notification-bell"><i class="far fa-bell"></i><span class="bell-badge">99+</span></div>
+        <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Search"></div>
+      </div>
+    </div>
+    <div class="sidebar-menu">
+      <a class="menu-item" href="verify.html"><i class="fas fa-qrcode"></i><span class="menu-item-text">Scan QR Code</span></a>
+      <a class="menu-item" href="dashboard.html"><i class="fas fa-home"></i><span class="menu-item-text">Dashboard</span></a>
+      <a class="menu-item" href="awareness.html"><i class="fas fa-book-open"></i><span class="menu-item-text">Civic Awareness</span></a>
+      <a class="menu-item" href="quizzes.html"><i class="fas fa-edit"></i><span class="menu-item-text">Civic Tests</span></a>
+      <a class="menu-item active" href="tasks.html"><i class="fas fa-clipboard-list"></i><span class="menu-item-text">Community Tasks</span></a>
+      <a class="menu-item" href="faq.html"><i class="fas fa-question-circle"></i><span class="menu-item-text">FAQ & Laws</span></a>
+      <a class="menu-item" href="jobs.html"><i class="fas fa-briefcase"></i><span class="menu-item-text">Govt Jobs</span></a>
+      <a class="menu-item" href="saved.html"><i class="fas fa-bookmark"></i><span class="menu-item-text">Saved Items</span></a>
+      <div class="menu-divider"></div>
+      <a class="menu-item" href="raise-complaint.html"><i class="fas fa-exclamation-circle"></i><span class="menu-item-text">Report an issue</span></a>
+      <a class="menu-item" href="chatbot.html"><i class="fas fa-robot"></i><span class="menu-item-text">Ask CAI</span></a>
+      <a class="menu-item" href="personal-info.html"><i class="fas fa-user"></i><span class="menu-item-text">Profile</span></a>
+      <div class="theme-toggle-container">
+        <button id="theme-toggle" class="theme-toggle-btn">
+          <i class="fas fa-moon"></i>
+          <span>Dark Mode</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="content-header">
+      <h1 style="color: var(--text-main);">Active Community Tasks</h1>
+      <p style="color: var(--text-muted);">Volunteer for local projects and build your civic score.</p>
+    </header>
+
+    <div class="task-card">
+      <div class="task-header">
+        <span class="task-badge">Environment</span>
+        <span style="color: #666; font-size: 0.9rem;">Due: 2 Days</span>
+      </div>
+      <h3>Plantation Drive - Hebbal Zone</h3>
+      <p>Join us this Sunday to plant 500 saplings in the Hebbal Lake area.</p>
+      <button class="btn-apply">Volunteer Now</button>
+    </div>
+
+    <div class="task-card">
+      <div class="task-header">
+        <span class="task-badge">Public Health</span>
+        <span style="color: #666; font-size: 0.9rem;">Due: 5 Days</span>
+      </div>
+      <h3>Blood Donation Camp</h3>
+      <p>Sewa Bharti is organizing a blood donation camp at Central Hospital.</p>
+      <button class="btn-apply">Volunteer Now</button>
+    </div>
+  </main>
+  <script src="../js/theme.js"></script>
+</body>
+</html>

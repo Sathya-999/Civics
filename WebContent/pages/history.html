@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Civic Issues | History</title>
+  <link rel="stylesheet" href="../css/portal.css?v=1.1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand-section">
+      <div class="brand-name">
+        <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" rx="10" fill="var(--primary-blue)"/>
+          <path d="M20 6L8 14V28H14V20H18V28H26V20H22V28H32V14L20 6Z" fill="white"/>
+          <rect x="17" y="14" width="6" height="6" rx="1" fill="var(--primary-blue)"/>
+          <circle cx="20" cy="32" r="3" fill="#2ecc71"/>
+        </svg>
+        <span>CIVIC CONNECT</span>
+      </div>
+    </div>
+    <!-- Sidebar Search -->
+    <div style="padding: 0 16px 12px;">
+      <div style="position:relative;">
+        <input type="text" id="sidebarSearch" placeholder="Search pages..." oninput="filterSidebar(this.value)"
+          style="width:100%;padding:9px 12px 9px 34px;border-radius:10px;border:1px solid var(--border-light);background:var(--bg-main);color:var(--text-main);font-size:0.8rem;outline:none;transition:var(--transition);">
+        <i class="fas fa-search" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.75rem;"></i>
+      </div>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="dashboard.html" class="menu-item">
+        <i class="fas fa-th-large"></i> Dashboard
+      </a>
+      <a href="services.html" class="menu-item">
+        <i class="fas fa-hand-holding-heart"></i> Services
+      </a>
+      <a href="raise-complaint.html" class="menu-item">
+        <i class="fas fa-file-signature"></i> Raise Complaint
+      </a>
+      <a href="track-complaint.html" class="menu-item">
+        <i class="fas fa-map-marker-alt"></i> Track Complaint
+      </a>
+      <a href="history.html" class="menu-item">
+        <i class="fas fa-history"></i> My History
+      </a>
+      <a href="chatbot.html" class="menu-item">
+        <i class="fas fa-robot"></i> Ask CAI
+      </a>
+      <div class="menu-divider"></div>
+      <a href="personal-info.html" class="menu-item">
+        <i class="fas fa-user-circle"></i> Profile
+      </a>
+      <a href="#" class="menu-item" id="theme-toggle">
+        <i class="fas fa-moon"></i> <span>Dark Mode</span>
+      </a>
+      <a href="#" onclick="logout()" class="menu-item" style="color: #e74c3c;">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header class="top-bar">
+      <div class="header-title">
+        <h2>My History</h2>
+        <p>Your civic activities and neighborhood impact at a glance.</p>
+      </div>
+      
+      <div class="top-actions">
+        <div class="user-profile-pill">
+          <img src="https://ui-avatars.com/api/?name=Member&background=007bff&color=fff" alt="User" class="user-avatar-small">
+          <span class="user-name">Member</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stats Summary -->
+    <div id="historySummary" style="display:none; margin-bottom: 24px;">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
+        <div style="background:var(--card-bg); padding:20px; border-radius:14px; border:1px solid var(--border-light); box-shadow:var(--shadow-sm);">
+          <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:6px;"><i class="fas fa-folder-open"></i> Total Complaints</div>
+          <div id="histTotal" style="font-size:1.8rem; font-weight:800; color:var(--primary-blue);">0</div>
+        </div>
+        <div style="background:var(--card-bg); padding:20px; border-radius:14px; border:1px solid var(--border-light); box-shadow:var(--shadow-sm);">
+          <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:6px;"><i class="fas fa-check-circle"></i> Resolved / Closed</div>
+          <div id="histClosed" style="font-size:1.8rem; font-weight:800; color:#2ecc71;">0</div>
+        </div>
+        <div style="background:var(--card-bg); padding:20px; border-radius:14px; border:1px solid var(--border-light); box-shadow:var(--shadow-sm);">
+          <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:6px;"><i class="fas fa-spinner"></i> In Progress</div>
+          <div id="histActive" style="font-size:1.8rem; font-weight:800; color:#f39c12;">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="historyContainer">
+      <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 10px;"></i>
+        <p>Loading your history...</p>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    .history-card {
+      background: var(--card-bg); padding: 22px; border-radius: 16px;
+      box-shadow: var(--shadow-sm); border: 1px solid var(--border-light);
+      margin-bottom: 16px; transition: all 0.3s;
+    }
+    .history-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+    .history-card .hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .history-card .cid { color: var(--text-muted); font-family: monospace; font-weight: 600; font-size: 0.85rem; }
+    .history-card .ttl { font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+    .history-card .dsc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 14px; }
+    .history-card .meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.82rem; color: var(--text-muted); border-top: 1px solid var(--border-light); padding-top: 12px; }
+    .history-card .meta span { display: flex; align-items: center; gap: 5px; }
+    .sbadge { padding: 4px 12px; border-radius: 20px; font-weight: 600; font-size: 0.78rem; }
+    .sbadge-open { background: #e7f3ff; color: #007bff; }
+    .sbadge-pending { background: #fffcf0; color: #f39c12; }
+    .sbadge-in-progress { background: #e7f3ff; color: #007bff; }
+    .sbadge-resolved { background: #e6fffa; color: #38b2ac; }
+    .sbadge-closed { background: #f0f0f0; color: #6c757d; }
+    .sbadge-rejected { background: #ffeef0; color: #e74c3c; }
+    .empty-state { background: var(--card-bg); color: var(--text-main); padding: 40px; border-radius: 15px; text-align: center; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); }
+  </style>
+
+  <script>
+    function filterSidebar(query) {
+      const items = document.querySelectorAll('.sidebar-menu .menu-item');
+      const q = query.toLowerCase().trim();
+      items.forEach(item => {
+        if (!q) { item.style.display = ''; return; }
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    async function loadHistory() {
+      const container = document.getElementById('historyContainer');
+      const summary = document.getElementById('historySummary');
+      try {
+        const res = await fetch('../ComplaintServlet?action=list');
+        if (res.status === 401) { window.location.href = 'login.html'; return; }
+        const complaints = await res.json();
+
+        if (!complaints || complaints.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-folder-open" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 20px;"></i>
+              <h3>No History Found</h3>
+              <p style="color: var(--text-muted);">You haven't submitted any complaints yet. Your history will appear here once you do.</p>
+              <button onclick="window.location.href='raise-complaint.html'" style="margin-top: 20px; background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                Raise Your First Complaint
+              </button>
+            </div>`;
+          return;
+        }
+
+        // Show summary
+        summary.style.display = 'block';
+        const total = complaints.length;
+        const closed = complaints.filter(c => ['Closed','Resolved'].includes(c.status)).length;
+        const active = complaints.filter(c => ['Open','Pending','In Progress'].includes(c.status)).length;
+        document.getElementById('histTotal').textContent = total;
+        document.getElementById('histClosed').textContent = closed;
+        document.getElementById('histActive').textContent = active;
+
+        container.innerHTML = '';
+        complaints.forEach(c => {
+          const statusKey = (c.status || 'open').toLowerCase().replace(/\s+/g, '-');
+          const date = c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-IN', { year:'numeric', month:'short', day:'numeric' }) : 'N/A';
+          const card = document.createElement('div');
+          card.className = 'history-card';
+          card.innerHTML = `
+            <div class="hdr">
+              <span class="cid">#${c.complaintId}</span>
+              <span class="sbadge sbadge-${statusKey}">${c.status}</span>
+            </div>
+            <div class="ttl">${c.title || 'Untitled'}</div>
+            <div class="dsc">${c.description || ''}</div>
+            <div class="meta">
+              <span><i class="fas fa-flag"></i> ${c.priority || 'Medium'}</span>
+              <span><i class="fas fa-map-marker-alt"></i> ${c.location || 'N/A'}</span>
+              <span><i class="fas fa-calendar"></i> ${date}</span>
+              <span><i class="fas fa-layer-group"></i> Level ${c.escalationLevel || 0}</span>
+              ${c.isVerified ? '<span><i class="fas fa-check-circle" style="color:#2ecc71;"></i> Verified</span>' : ''}
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      } catch (e) {
+        console.error('History load error:', e);
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #e74c3c; margin-bottom: 20px;"></i>
+            <h3>Error Loading History</h3>
+            <p style="color: var(--text-muted);">Could not load complaint history. Please try again.</p>
+            <button onclick="loadHistory()" style="margin-top: 15px; background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Retry</button>
+          </div>`;
+      }
+    }
+    document.addEventListener('DOMContentLoaded', loadHistory);
+  </script>
+  <script src="../js/portal.js"></script>
+  <script src="../js/theme.js"></script>
+</body>
+</html>
