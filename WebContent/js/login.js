@@ -8,46 +8,71 @@ document.addEventListener('DOMContentLoaded', () => {
     const signInForm = document.getElementById("signInForm");
     const signUpForm = document.getElementById("signUpForm");
 
-    // UI Switching Animation
     if (signUpButton && container) {
-        signUpButton.addEventListener("click", () => {
-            container.classList.add("right-panel-active");
-            console.log("Switched to Sign Up");
-        });
+        signUpButton.addEventListener("click", () => container.classList.add("right-panel-active"));
     }
 
     if (signInButton && container) {
-        signInButton.addEventListener("click", () => {
-            container.classList.remove("right-panel-active");
-            console.log("Switched to Sign In");
+        signInButton.addEventListener("click", () => container.classList.remove("right-panel-active"));
+    }
+
+    document.querySelectorAll('.toggle-password').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            if (!input) return;
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            btn.innerHTML = isPassword ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+        });
+    });
+
+    const signUpPassword = document.getElementById('signUpPassword');
+    const strength = document.getElementById('passwordStrength');
+    if (signUpPassword && strength) {
+        signUpPassword.addEventListener('input', () => {
+            const value = signUpPassword.value;
+            let score = 0;
+            if (value.length >= 10) score++;
+            if (/[A-Z]/.test(value) && /[a-z]/.test(value)) score++;
+            if (/\d/.test(value)) score++;
+            if (/[^A-Za-z0-9]/.test(value)) score++;
+            strength.classList.remove('weak', 'medium', 'strong');
+            if (!value) {
+                strength.textContent = 'Use 10+ chars with letters, numbers & symbols.';
+            } else if (score <= 1) {
+                strength.classList.add('weak');
+                strength.textContent = 'Weak password';
+            } else if (score <= 3) {
+                strength.classList.add('medium');
+                strength.textContent = 'Moderate password';
+            } else {
+                strength.classList.add('strong');
+                strength.textContent = 'Strong password';
+            }
         });
     }
 
-    // Login Form Preparation
     if (signInForm) {
-        signInForm.addEventListener("submit", (e) => {
-            // Remove error message if exists
+        signInForm.addEventListener("submit", () => {
             const status = document.getElementById('signInStatus');
-            if(status) status.textContent = "Logging in...";
-            
+            if (status) status.textContent = "Logging in...";
+
             const emailInput = document.getElementById("signInEmail");
             if (emailInput) {
                 const email = emailInput.value;
-                const namePart = email.split('@')[0];
+                const namePart = email.split('@')[0] || 'User';
                 const capitalizedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
                 localStorage.setItem(profileKey, JSON.stringify({
                     fullName: capitalizedName,
                     email: email
                 }));
             }
-            console.log("Submitting Login...");
-            // Browser handles the POST to /LoginServlet
         });
     }
 
-    // Register Form Preparation
     if (signUpForm) {
-        signUpForm.addEventListener("submit", (e) => {
+        signUpForm.addEventListener("submit", () => {
             const nameInput = document.getElementById("signUpName");
             if (nameInput) {
                 const name = nameInput.value;
@@ -57,11 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     email: email
                 }));
             }
-            console.log("Submitting Registration...");
-            // Browser handles the POST to /RegisterServlet
         });
     }
-
-    // Google Sign-In is handled by Google Identity Services in login.html
-    // No need for manual button handling here
 });

@@ -13,6 +13,7 @@ import java.io.IOException;
 
 @WebFilter("/pages/*")
 public class AuthFilter implements Filter {
+    private static final long TOKEN_MAX_AGE_MS = 24L * 60 * 60 * 1000;
     private UserDAO userDAO;
 
     @Override
@@ -21,15 +22,17 @@ public class AuthFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) 
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        
+
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         String path = req.getRequestURI();
 
+        applySecurityHeaders(res);
+
         // Allow login page and public pages to bypass filter
-        if (path.endsWith("login.html") || path.endsWith("verify.html") 
+        if (path.endsWith("login.html") || path.endsWith("verify.html")
             || path.endsWith("faq.html") || path.endsWith("awareness.html")) {
             chain.doFilter(request, response);
             return;
@@ -47,33 +50,51 @@ public class AuthFilter implements Filter {
                         String decrypted = SecurityUtil.decrypt(cookie.getValue());
                         if (decrypted != null && decrypted.contains(":")) {
                             String[] parts = decrypted.split(":");
-                            if (parts.length >= 2) {
+                            if (parts.length >= 3) {
                                 String userEmail = parts[1];
-                                // Load user from DB by email to restore session properly
-                                User dbUser = userDAO.getUserByEmail(userEmail);
-                                if (dbUser != null) {
-                                    loggedIn = true;
-                                    if (session == null) {
-                                        session = req.getSession(true);
+                                long issuedAt = parseLong(parts[2]);
+                                boolean tokenFresh = issuedAt > 0 && (System.currentTimeMillis() - issuedAt) <= TOKEN_MAX_AGE_MS;
+                                if (tokenFresh) {
+                                    User dbUser = userDAO.getUserByEmail(userEmail);
+                                    if (dbUser != null) {
+                                        loggedIn = true;
+                                        if (session == null) {
+                                            session = req.getSession(true);
+                                        }
+                                        session.setAttribute("user", dbUser);
+                                        session.setMaxInactiveInterval(30 * 60);
                                     }
-                                    session.setAttribute("user", dbUser);
-                                    System.out.println("Session restored from cookie for: " + userEmail);
                                 }
                             }
-                            break;
                         }
+                        break;
                     }
                 }
             }
         }
 
-        // Redirect to login if not logged in and not accessing allowed pages
         if (!loggedIn && !path.endsWith("index.html")) {
             res.sendRedirect(req.getContextPath() + "/pages/login.html");
             return;
         }
 
         chain.doFilter(request, response);
+    }
+
+    private void applySecurityHeaders(HttpServletResponse response) {
+        response.setHeader("X-Content-Type-Options", "nosniff");
+        response.setHeader("X-Frame-Options", "DENY");
+        response.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+        response.setHeader("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+        response.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://accounts.google.com https://oauth2.googleapis.com https://www.googleapis.com;");
+    }
+
+    private long parseLong(String value) {
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
     }
 
     @Override

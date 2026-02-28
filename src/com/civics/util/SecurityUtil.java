@@ -1,47 +1,75 @@
 package com.civics.util;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import javax.crypto.Cipher;
+import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class SecurityUtil {
-    private static final String KEY = "1234567890123456"; // 16 characters for AES-128
-    private static final String ALGORITHM = "AES";
+    private static final String HMAC_ALGORITHM = "HmacSHA256";
+    private static final String SECRET = loadSecret();
+
+    private static String loadSecret() {
+        String configured = System.getenv("CIVICS_AUTH_SECRET");
+        if (configured != null && configured.trim().length() >= 32) {
+            return configured.trim();
+        }
+        System.err.println("[Security] CIVICS_AUTH_SECRET is not set or too short; using development fallback secret.");
+        return "change-this-development-secret-before-production";
+    }
 
     public static String encrypt(String data) {
+        if (data == null || data.isEmpty()) {
+            return null;
+        }
         try {
-            SecretKeySpec secretKey = new SecretKeySpec(KEY.getBytes("UTF-8"), ALGORITHM);
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            byte[] encryptedData = cipher.doFinal(data.getBytes("UTF-8"));
-            // Use URL-safe Base64 to avoid +, /, = which break cookies
-            String base64 = Base64.getUrlEncoder().withoutPadding().encodeToString(encryptedData);
-            return URLEncoder.encode(base64, "UTF-8");
+            String payload = Base64.getUrlEncoder().withoutPadding()
+                    .encodeToString(data.getBytes(StandardCharsets.UTF_8));
+            String signature = sign(payload);
+            return payload + "." + signature;
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Token generation failed: " + e.getMessage());
             return null;
         }
     }
 
-    public static String decrypt(String encryptedData) {
+    public static String decrypt(String token) {
+        if (token == null || token.trim().isEmpty()) {
+            return null;
+        }
         try {
-            String decoded = URLDecoder.decode(encryptedData, "UTF-8");
-            SecretKeySpec secretKey = new SecretKeySpec(KEY.getBytes("UTF-8"), ALGORITHM);
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            cipher.init(Cipher.DECRYPT_MODE, secretKey);
-            // Try URL-safe decoder first, then standard decoder as fallback
-            byte[] decodedData;
-            try {
-                decodedData = Base64.getUrlDecoder().decode(decoded);
-            } catch (IllegalArgumentException e) {
-                decodedData = Base64.getDecoder().decode(decoded);
+            String[] parts = token.split("\\.");
+            if (parts.length != 2) {
+                return null;
             }
-            byte[] decryptedData = cipher.doFinal(decodedData);
-            return new String(decryptedData, "UTF-8");
+            String payload = parts[0];
+            String signature = parts[1];
+            String expected = sign(payload);
+            if (!constantTimeEquals(expected, signature)) {
+                return null;
+            }
+            byte[] decoded = Base64.getUrlDecoder().decode(payload);
+            return new String(decoded, StandardCharsets.UTF_8);
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private static String sign(String payload) throws Exception {
+        Mac mac = Mac.getInstance(HMAC_ALGORITHM);
+        mac.init(new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), HMAC_ALGORITHM));
+        byte[] digest = mac.doFinal(payload.getBytes(StandardCharsets.UTF_8));
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(digest);
+    }
+
+    private static boolean constantTimeEquals(String a, String b) {
+        if (a == null || b == null || a.length() != b.length()) {
+            return false;
+        }
+        int result = 0;
+        for (int i = 0; i < a.length(); i++) {
+            result |= a.charAt(i) ^ b.charAt(i);
+        }
+        return result == 0;
     }
 }
