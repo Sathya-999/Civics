@@ -3,6 +3,7 @@ package com.civics.controller;
 import com.civics.dao.UserDAO;
 import com.civics.model.User;
 import com.civics.util.SecurityUtil;
+import com.civics.util.AuthCookieUtil;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -99,16 +100,13 @@ public class GoogleCallbackServlet extends HttpServlet {
 
             HttpSession session = request.getSession(true);
             session.setAttribute("user", user);
+            session.setMaxInactiveInterval(30 * 60);
 
             try {
                 String tokenData = user.getUserId() + ":" + user.getEmail() + ":" + System.currentTimeMillis();
                 String encryptedToken = SecurityUtil.encrypt(tokenData);
                 if (encryptedToken != null) {
-                    Cookie authCookie = new Cookie("AUTH_TOKEN", encryptedToken);
-                    authCookie.setHttpOnly(true);
-                    authCookie.setPath("/");
-                    authCookie.setMaxAge(60 * 60 * 24);
-                    response.addCookie(authCookie);
+                    AuthCookieUtil.setAuthCookie(request, response, encryptedToken);
                 }
             } catch (Exception e) {
                 System.err.println("Auth cookie error: " + e.getMessage());

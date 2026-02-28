@@ -404,3 +404,44 @@ button.ghost:hover {
     font-size: 1.48rem;
   }
 }
+
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 44px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  padding: 0;
+  box-shadow: none;
+}
+
+.toggle-password:hover {
+  transform: translateY(-50%);
+  box-shadow: none;
+  background: rgba(0,0,0,0.06);
+}
+
+.password-strength {
+  display: block;
+  margin-top: -4px;
+  margin-bottom: 10px;
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+.password-strength.weak { color: #b42318; }
+.password-strength.medium { color: #b26b00; }
+.password-strength.strong { color: #0f8f5e; }
